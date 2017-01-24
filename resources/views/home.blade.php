@@ -3,50 +3,52 @@
 @section('content')
 <div class="container">
     <div class="row">
-        <div class="col-md-8 col-md-offset-2">
+        <div class="col-md-12 col-md-offset-0">
             <div class="panel panel-default">
                 <div class="panel-heading">Dashboard</div>
 
                 <div class="panel-body">
-                    <canvas id="myChart" width="400" height="400"></canvas>
+                    <div class="chartWrapper">
+                        <div class="chartAreaWrapper">
+                            <canvas id="myChart" height="500" width="10000"></canvas>
+                        </div>
+                        <canvas id="myChartAxis" height="500" width="0"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.bundle.min.js"></script>
+
+<script src="{{url('/js/chart.js')}}"></script>
 <script>
-    var ctx = document.getElementById("myChart")
-    var myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: <?php print_r(json_encode($fullData['date'])); ?>,
-            datasets: [{
-                label: 'Temperatuur per dag',
-                data: <?php print_r(json_encode($fullData['temperature'])); ?>,
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255,99,132,1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
-                ],
-                borderWidth: 1
-            }]
-        },
+    var ctx = document.getElementById("myChart").getContext("2d");
+    var data = {
+        labels: <?php print_r(json_encode($fullData['time'])); ?>,
+        datasets: [{
+            label: 'Temperatuur per dag',
+            data: <?php print_r(json_encode($fullData['dewpoint'])); ?>,
+            fillColor: "rgba(220,220,220,0.2)",
+            strokeColor: "rgba(220,220,220,1)",
+            pointColor: "rgba(220,220,220,1)",
+            pointStrokeColor: "#fff",
+            pointHighlightFill: "#fff",
+            pointHighlightStroke: "rgba(220,220,220,1)",
+        }],
         options: {
-            tooltips: {
-                enabled: true
-            }
+
+        }
+    };
+    new Chart(ctx).Line(data, {
+        onAnimationComplete: function () {
+            var sourceCanvas = this.chart.ctx.canvas;
+                var copyWidth = this.scale.xScalePaddingLeft - 5;
+                // the +5 is so that the bottommost y axis label is not clipped off
+                // we could factor this in using measureText if we wanted to be generic
+                var copyHeight = this.scale.endPoint + 5;
+                var targetCtx = document.getElementById("myChartAxis").getContext("2d");
+                targetCtx.canvas.width = copyWidth;
+                targetCtx.drawImage(sourceCanvas, 0, 0, copyWidth, copyHeight, 0, 0, copyWidth, copyHeight);
         }
     });
 </script>
