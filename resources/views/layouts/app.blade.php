@@ -80,8 +80,9 @@
                 </div>
             </div>
         </nav>
-
-        @yield('content')
+        <div id="background-container">
+            @yield('content')
+        </div>
     </div>
 
     <!-- Scripts -->
