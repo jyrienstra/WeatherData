@@ -54,6 +54,12 @@ return [
             'visibility' => 'public',
         ],
 
+        'weatherdata' => [
+            'driver' => 'local',
+            'root' => storage_path('weatherdata'),
+            'visibility' => 'public',
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => 'your-key',
