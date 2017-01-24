@@ -20,10 +20,10 @@
     var myChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: <?php print_r($x); ?>,
+            labels: <?php print_r(json_encode($fullData['date'])); ?>,
             datasets: [{
                 label: 'Temperatuur per dag',
-                data: <?php print_r($y); ?>,
+                data: <?php print_r(json_encode($fullData['temperature'])); ?>,
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
                     'rgba(54, 162, 235, 0.2)',

@@ -32,21 +32,24 @@ class HomeController extends Controller
         //After that: x, y
         $seperated = explode("\r\n", $file);
 
-        $labels = json_encode(array_shift($seperated)); // not used for now
-        $x = [];
-        $y = [];
+        $labels = explode(',', array_shift($seperated)); // not used for now
+
+        for($y = 0; $y < count($labels); $y++) {
+            $fullData[strtolower($labels[$y])] = [];
+        }
 
         for($i = 0; $i < count($seperated); $i++) {
             if(empty(trim($seperated[$i]))) continue;
 
-            //x,y
+            //0 -> date, 1-> time, 2 -> temperature, 3 -> dewpoint
             $data = explode(',', $seperated[$i]);
-            $x[] = $data[0];
-            $y[] = $data[1];
-        }
-        $x = json_encode($x);
-        $y = json_encode($y);
+            for($x = 0; $x < count($data); $x++) {
+                $keys = array_keys($fullData);
 
-        return view('home', compact('labels', 'x', 'y'));
+                $fullData[$keys[$x]][] = $data[$x];
+            }
+        }
+
+        return view('home', compact('fullData'));
     }
 }
