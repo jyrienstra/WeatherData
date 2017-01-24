@@ -31,20 +31,24 @@ class HomeController extends Controller
         $seperated = explode("\r\n", $file);
 
         //Get the first value, split by comma and create an array with it. This array contains the measurement types
-        $labels = explode(',', array_shift($seperated)); 
+        $labels = explode(',', array_shift($seperated));
 
-        //Dynamically fill an array with measurements.
+        //Dynamically fill an array with measurements. ['column_name1' => [], 'column_name2' => ]
         for($y = 0; $y < count($labels); $y++) {
             $fullData[strtolower($labels[$y])] = [];
         }
 
+        //Loop through all rows (except for the first one)
         for($i = 0; $i < count($seperated); $i++) {
+            //If there is an empty row, skip it
             if(empty(trim($seperated[$i]))) continue;
 
-            //0 -> date, 1-> time, 2 -> temperature, 3 -> dewpoint
+            //Split the row on commas
             $data = explode(',', $seperated[$i]);
+            //loop through the splitted row
             for($x = 0; $x < count($data); $x++) {
-
+                //The index of specific data is located in the same index as the label. is. For example: the first value (index 0) is the temperature.
+                //The first value of the $labels array is temperature, so this data has to be filled in the array he has as value.
                 $fullData[strtolower($labels[$x])][] = $data[$x];
             }
 
