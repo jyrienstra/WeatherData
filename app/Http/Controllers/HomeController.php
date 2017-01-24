@@ -30,13 +30,13 @@ class HomeController extends Controller
         //Split the .csv by newline.
         $seperated = explode("\r\n", $file);
 
-        //Get the first value, split by comma and create a new multidimensional array with it
-        $labels = explode(',', array_shift($seperated)); // not used for now
+        //Get the first value, split by comma and create an array with it. This array contains the measurement types
+        $labels = explode(',', array_shift($seperated)); 
 
+        //Dynamically fill an array with measurements.
         for($y = 0; $y < count($labels); $y++) {
             $fullData[strtolower($labels[$y])] = [];
         }
-        $keys = array_keys($fullData);
 
         for($i = 0; $i < count($seperated); $i++) {
             if(empty(trim($seperated[$i]))) continue;
@@ -45,7 +45,7 @@ class HomeController extends Controller
             $data = explode(',', $seperated[$i]);
             for($x = 0; $x < count($data); $x++) {
 
-                $fullData[$keys[$x]][] = $data[$x];
+                $fullData[strtolower($labels[$x])][] = $data[$x];
             }
 
         }
