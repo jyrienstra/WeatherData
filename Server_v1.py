@@ -141,17 +141,22 @@ def extrapolate(datalist):
         for i in range(len(previous_data)):
             x.append(i)
 
-        # Import numpy, importing numpy in all threads would cause alot of load, so importing it when needed reliefs 
+        # Import numpy, importing numpy in all threads would cause alot of load, so importing it when needed reliefs
         # this.
-        import numpy
-        # Try to fit a curve on the data, with a 4 degree polynomial
-        curve = numpy.polyfit(x, previous_data, 4)
-        poly = numpy.poly1d(curve)
 
-        # Calculate the next value in the sequence.
-        next_value = round(poly(len(previous_data) + 1), 1)
-        print(next_value)
-        
+        # Try to fit a curve on the data, with a 4 degree polynomial
+        # If there are more then 6 measurements, calculate the missing value. Otherwise take the previous measurement.
+        if len(previous_data) > 6:
+            import numpy
+            curve = numpy.polyfit(x, previous_data, 2)
+            poly = numpy.poly1d(curve)
+
+            # Calculate the next value in the sequence.
+            next_value = round(poly(len(previous_data) + 1), 1)
+            print(next_value)
+        else:
+            next_value = previous_data[-1]
+
         # Add the new value back to the datalist
         datalist[number + 1] = next_value
     print(missing_list)
