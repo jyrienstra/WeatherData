@@ -3,79 +3,106 @@ import socket
 from threading import Thread
 import xml.etree.ElementTree as ET
 from sys import exit
+import subprocess
+import datetime
+import os
+
+import init
 
 
-def stationThread(connection, ip, port, MAX_BUFFER_SIZE=3500):
+def stationThread(connection, ip, port, MAX_BUFFER_SIZE=4096):
     check = True
+    data = ""
 
     filter_list = []
     filter_file = open('data/filter.csv', 'r')
+
     for line in filter_file:
         filter_list.append(line.strip('\n'))
 
     while check:
         # Receiving data
-        data = connection.recv(MAX_BUFFER_SIZE)
+        new_data = connection.recv(MAX_BUFFER_SIZE)
+
         # if data is bigger then the MAX_BUFFER_SIZE, notify the user.
-        size = sys.getsizeof(data)
+        size = sys.getsizeof(new_data)
+        data += new_data.decode()
         # Check the size of the data
         if size >= MAX_BUFFER_SIZE:
             print("Too many bytes, buffer too small: {}".format(size))
-            break
+            data = new_data.decode()
         # When there is no data, stop the loop
-        elif not data:
+        elif not new_data:
             break
-        # Parse the data to a readable format, XML
-        tree = ET.fromstring(data)
 
-        # Retrieve data from xml string
-        for parent in tree.findall('MEASUREMENT'):
-            data_list = [parent.find('STN').text, parent.find('DATE').text, parent.find('TIME').text,
-                         parent.find('TEMP').text, parent.find('DEWP').text, parent.find('VISIB').text]
+        elif "<?xml version=\"1.0\"?>" in data:
+            if "</WEATHERDATA>" in data:
+                first, end_tag, buffer = data.partition('</WEATHERDATA>\n')
 
-            # Check whether the station number is in the filter list
-            if data_list[0] in filter_list:
+                # Parse the data to a readable format, XML
+                tree = ET.fromstring(first + end_tag)
 
-                # Open the file of the station
-                csv_file = open("data/{}.csv".format(data_list[0]), 'a')
+                # Retrieve data from xml string
+                for parent in tree.findall('MEASUREMENT'):
+                    data_list = [parent.find('STN').text, parent.find('DATE').text, parent.find('TIME').text,
+                                 parent.find('TEMP').text, parent.find('DEWP').text, parent.find('VISIB').text]
+                    # Check whether the station number is in the filter list
+                    if data_list[0] in filter_list:
 
-                temperature = data_list[3]
-                temperatureDewpoint = data_list[4]
-                humidity = -1
-                data_list.append(humidity)
+                        # Open the file of the station
 
-                # Check whether there is missing data in the measurement
-                if None not in data_list:
-                    # Incase there is no missing data, write the new data to the file.
-                    humidity = str(round((
-                        100 * ((112 - (0.1 * float(temperature)) + float(temperatureDewpoint)) / (
-                            112 + (0.9 * float(temperature)))) ** 8), 2))
-                    data_list[6] = humidity
-                    csv_file.write(
-                        "{},{},{},{},{},{}\n".format(data_list[1], data_list[2], data_list[3], data_list[4],
-                                                     data_list[5],
-                                                     data_list[6]))
-                else:
-                    # Incase there is missing data, extrapolate it.
-                    print("{} - {},{},{},{},{},{}\n".format(data_list[0], data_list[1], data_list[2], data_list[3],
-                                                            data_list[4], data_list[5], data_list[6]))
-                    data_list = extrapolate(data_list)
-                    temperature = data_list[3]
-                    temperatureDewpoint = data_list[4]
+                        temperature = data_list[3]
+                        temperatureDewpoint = data_list[4]
+                        humidity = -1
+                        data_list.append(humidity)
 
-                    # Write the new data to the file.
-                    data_list[6] = str(round((
-                        100 * ((112 - (0.1 * float(temperature)) + float(temperatureDewpoint)) / (
-                            112 + (0.9 * float(temperature)))) ** 8), 2))
-                    csv_file.write(
-                        "{},{},{},{},{},{}\n".format(data_list[1], data_list[2], data_list[3], data_list[4],
-                                                     data_list[5],
-                                                     data_list[6]))
-                csv_file.close()
+                        # Check whether there is missing data in the measurement
+                        if None not in data_list:
+                            # Incase there is no missing data, write the new data to the file.
+                            humidity = str(round((
+                                100 * ((112 - (0.1 * float(temperature)) + float(temperatureDewpoint)) / (
+                                    112 + (0.9 * float(temperature)))) ** 8), 2))
+                            data_list[6] = humidity
+                            writeToFile(data_list)
+
+                        else:
+                            # Incase there is missing data, extrapolate it.
+                            print("{} - {},{},{},{},{},{}\n".format(data_list[0], data_list[1], data_list[2], data_list[3],
+                                                                    data_list[4], data_list[5], data_list[6]))
+                            data_list = extrapolate(data_list)
+                            temperature = data_list[3]
+                            temperatureDewpoint = data_list[4]
+
+                            # Write the new data to the file.
+                            data_list[6] = str(round((
+                                100 * ((112 - (0.1 * float(temperature)) + float(temperatureDewpoint)) / (
+                                    112 + (0.9 * float(temperature)))) ** 8), 2))
+                            writeToFile(data_list)
+                data = buffer
+        else:
+            data = new_data.decode()
 
     # Close the connection, when the loop stops
     connection.close()
     print("Connection {}:{} is terminated".format(ip, port))
+
+
+def writeToFile(data_list):
+    """
+    :param file: What file to write to
+    :param data_list: The data to write
+    """
+    date = datetime.date.today()
+    date_path = "data/{}".format(date)
+
+    csv_file = open("{}/{}.csv".format(date_path, data_list[0]), 'a')
+
+    csv_file.write(
+        "{},{},{},{},{},{}\n".format(data_list[1], data_list[2], data_list[3], data_list[4],
+                                     data_list[5],
+                                     data_list[6]))
+
+    csv_file.close()
 
 
 def weatherServer():
@@ -83,7 +110,7 @@ def weatherServer():
     Open a weather server
     """
     port = 7789
-    ip = "localhost"
+    ip = "0.0.0.0"
 
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -133,7 +160,6 @@ def extrapolate(datalist):
     # For all missing data in the list, retrieve the last 30 measurements (or less)
     for number in missing_list:
         previous_data = extrapolateRetrieveData(datalist, number)
-        print(previous_data)
 
         x = []
 
@@ -146,6 +172,7 @@ def extrapolate(datalist):
 
         # Try to fit a curve on the data, with a 4 degree polynomial
         # If there are more then 6 measurements, calculate the missing value. Otherwise take the previous measurement.
+        next_value = -1
         if len(previous_data) > 6:
             import numpy
             curve = numpy.polyfit(x, previous_data, 2)
@@ -155,7 +182,17 @@ def extrapolate(datalist):
             next_value = round(poly(len(previous_data) + 1), 1)
             print(next_value)
         else:
-            next_value = previous_data[-1]
+            try:
+                next_value = previous_data[-1]
+            except IndexError:
+                yesterday = datetime.date.today() - datetime.timedelta(1)
+                date_path = "data/{}".format(yesterday)
+                if os.path.isdir(date_path):
+                    previous_data = extrapolateRetrieveData(datalist, number, True)
+                    if not previous_data:
+                        calc_curve(previous_data, x)
+                    else:
+                        print("Data was dropped")
 
         # Add the new value back to the datalist
         datalist[number + 1] = next_value
@@ -163,8 +200,27 @@ def extrapolate(datalist):
     return datalist
 
 
-def extrapolateRetrieveData(datalist, number):
-    file = open("data/{}.csv".format(datalist[0]), 'r')
+def calc_curve(previous_data, x):
+    import numpy
+    curve = numpy.polyfit(x, previous_data, 2)
+    poly = numpy.poly1d(curve)
+
+    # Calculate the next value in the sequence.
+    next_value = round(poly(len(previous_data) + 1), 1)
+    return next_value
+
+
+def extrapolateRetrieveData(datalist, number, yesterday=False):
+    if yesterday:
+        date = datetime.date.today() - datetime.timedelta(1)
+        date_path = "data/{}".format(date)
+        if not os.path.isdir(date_path):
+            return False
+    else:
+        date = datetime.date.today()
+        date_path = "data/{}".format(date)
+
+    file = open("{}/{}.csv".format(date_path, datalist[0]), 'r')
 
     count = 0
     measurements = []
