@@ -20,3 +20,5 @@ Auth::routes();
 Route::get('/home', 'HomeController@home');
 
 Route::get('/top5visibility', 'HomeController@top5visibility');
+
+Route::get('/humidity', 'HumidityController@home');
