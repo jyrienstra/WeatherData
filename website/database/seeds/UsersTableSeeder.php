@@ -16,10 +16,10 @@ class UsersTableSeeder extends Seeder
          */
         for ($i = 0; $i < 5 ; $i++) {
             DB::table("users")->insert([
-                "name" 	=> "test" . $i,
+                "name" => "test" . $i,
                 "email" => "test" . $i . "@domain.com",
                 "password" => bcrypt(("secret" . $i)),
-                "created_at" =>	Carbon\Carbon::now(),
+                "created_at" => Carbon\Carbon::now(),
                 "updated_at" => Carbon\Carbon::now()
             ]);
         }
