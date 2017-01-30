@@ -15,10 +15,10 @@ class HumidityController extends Controller
      * @return
      */
     public function data() {
-        $file = Storage::disk('weatherdata')->get('130670.csv');
+        $file = Storage::disk('weatherdata')->get('humidity.csv');
 
         // Split the .csv by newline.
-        $seperated = explode("\n", $file);
+        $seperated = explode("\r\n", $file);
 
         // Get the first value, split by comma and create an array with it. This array contains the measurement types
         $labels = explode(',', array_shift($seperated));
@@ -49,22 +49,6 @@ class HumidityController extends Controller
 
         }
 
-        // Current hour (12, or 22 for example)
-        $currentHour = \Carbon\Carbon::now()->hour;
-
-        // Loop over the time array
-        foreach ($fullData["time"] as $key => $value) {
-
-            // Explode the timestamp (h:m:s)
-            $currentHourCSV = explode(':', $value);
-
-            // If the current timestamp is the same as the timestamp in the csv file
-            if($currentHourCSV[0] == $currentHour) {
-                // @todo Add it to the fulldata array, based on a cronjob
-            }
-
-        }
-
         return $fullData;
     }
 
@@ -74,7 +58,7 @@ class HumidityController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function home() {
-        return $this->data(); // debugging
+        //return $this->data(); // debugging
         return view('humidity');
     }
 }

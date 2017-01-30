@@ -51,7 +51,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost/schnitzel'),
+    'url' => env('APP_URL', 'http://localhost/project-2.2/website/'),
 
     /*
     |--------------------------------------------------------------------------
