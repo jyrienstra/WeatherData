@@ -13,7 +13,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        \App\Console\Commands\parseTemporaryData::class
+        \App\Console\Commands\parseTemporaryData::class,
+        \App\Console\Commands\calculateHumidity::class
     ];
 
     /**
@@ -26,6 +27,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('parseAverageVisibility')
                  ->dailyAt('23:59');
+        // @todo schedule calculateHumidity
     }
 
     /**
