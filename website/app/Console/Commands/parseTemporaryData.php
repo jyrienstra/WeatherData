@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 use DB;
 
@@ -40,7 +41,8 @@ class parseTemporaryData extends Command
      */
     public function handle()
     {
-        /*$weatherdata = [131050,131160,131310,131825,132080,132090,132230,132240,132280,132420,132570,132610,132690,132740,132790,132850,132890,132950,133330,133340,133480,133520,133530,133670,
+        DB::table('average_visibility')->where('date', date('Y-m-d'))->delete();
+        $weatherdata = [131050,131160,131310,131825,132080,132090,132230,132240,132280,132420,132570,132610,132690,132740,132790,132850,132890,132950,133330,133340,133480,133520,133530,133670,
 33760,
 133766,
 133770,
@@ -155,11 +157,16 @@ class parseTemporaryData extends Command
 170575,
 170600,
 691810
-];*/
+];
 
-$weatherdata = [130670];
+$performance = time();
     for($foo = 0; $foo < count($weatherdata); $foo++) {
-        $file = Storage::disk('weatherdata')->get($weatherdata[$foo] . '.csv');
+        try {
+            $file = Storage::disk('weatherdata')->get(date('Y-m-d', time()) . '/' . $weatherdata[$foo] . '.csv');
+        }
+        catch(FileNotFoundException $e) {
+            continue;
+        }
 
         // Split the .csv by newline.
         $seperated = explode("\r\n", $file);
@@ -172,6 +179,8 @@ $weatherdata = [130670];
             $fullData[strtolower($labels[$y])] = [];
         }
 
+        $totalVisibility = 0;
+        $index = 0;
         // Loop through all rows (except for the first one)
         for($i = 0; $i < count($seperated); $i++) {
 
@@ -184,40 +193,48 @@ $weatherdata = [130670];
             $data = explode(',', $seperated[$i]);
 
             // Loop through the splitted row
-            for($x = 0; $x < count($data); $x++) {
+            /*for($x = 0; $x < count($data); $x++) {
                 // The index of specific data is located in the same index as the label. is.
                 // For example: the first value (index 0) is the temperature.
                 // The first value of the $labels array is temperature, so this data has to be filled in the array he has as value.
                 $fullData[strtolower($labels[$x])][] = $data[$x];
-            }
+            }*/
+            //$fullData['visibility'][] = $data[4];
+
+            $totalVisibility += $data[4];
+            $index++;
 
         }
 
-        // Current hour (12, or 22 for example)
-        $currentHour = \Carbon\Carbon::now()->hour;
-        $temporaryArray = [];
+        // // Current hour (12, or 22 for example)
+        // $now = time();
+        // $temporaryArray = [];
+        //
+        // // Loop over the time array
+        // foreach ($fullData["date"] as $key => $value) {
+        //
+        //     // If the current timestamp is the same as the timestamp in the csv file
+        //     if(strtotime($value) > strtotime('today midnight') && strtotime($value) < strtotime('tomorrow midnight')) {
+        //         //$fulldata = ['topFive' => ['130670' => 156.6, '130671' = 123.4]]
+        //         $temporaryArray[] = $fullData['visibility'][$key];
+        //     }
+        // }
+        //
+        // dd($temporaryArray);
 
-        // Loop over the time array
-        foreach ($fullData["time"] as $key => $value) {
+        // $total = 0;
+        // for($i = 0; $i < count($fullData['visibility']); $i++) {
+        //     $total += $fullData['visibility'][$i];
+        // }
 
-            // Explode the timestamp (h:m:s)
-            $currentHourCSV = explode(':', $value);
 
-            // If the current timestamp is the same as the timestamp in the csv file
-            if($currentHourCSV[0] == $currentHour) {
-                //$fulldata = ['topFive' => ['130670' => 156.6, '130671' = 123.4]]
-                $temporaryArray[] = $fullData['visibility'][$key];
-            }
-        }
+        //$fullData['averageVisibility'][$weatherdata[$foo]] = $totalVisibility / $index;
 
-        $total = 0;
-        for($i = 0; $i < count($temporaryArray); $i++) {
-            $total += $temporaryArray[$i];
-        }
-
-        $fullData['averageVisibility'][$weatherdata[$foo]] = $total / count($temporaryArray);
+        DB::table('average_visibility')->insert([
+            'station_id' => $weatherdata[$foo],
+            'average_visibility' => $totalVisibility / $index,
+            'date' => date('Y-m-d')
+        ]);
     }
-
-    dd($fullData);
 }
 }

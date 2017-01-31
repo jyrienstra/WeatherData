@@ -19,7 +19,7 @@
         </div>
     </div>
 </div>
-<script src="{{url('/js/chart.js')}}"></script>
+<script src= "https://cdn.zingchart.com/zingchart.min.js">
 <script>
     var ctx = document.getElementById("myChart").getContext("2d");
     var data = {

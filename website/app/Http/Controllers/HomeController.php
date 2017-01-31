@@ -23,7 +23,7 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function data()
+    public static function data()
     {
         $file = Storage::disk('weatherdata')->get('130670.csv');
 

@@ -13,7 +13,7 @@ class calculateHumidity extends Command
      *
      * @var string
      */
-    protected $signature = 'calculateHumidity';
+    protected $signature = 'command:calculateHumidity';
 
     /**
      * The console command description.
