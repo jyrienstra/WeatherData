@@ -33,6 +33,18 @@ public class Server extends Thread {
         s = s.substring(start,end);
         return s;
     }
+
+    public double calculateHumidity(float temp, float dewpoint){
+        double humidity = -1;
+        humidity = (100*(112-(0.1*temp) + dewpoint)) / (112+(0.9*temp));
+        humidity = Math.pow(humidity,8);
+
+//        humidity = str(round((
+//                100 * ((112 - (0.1 * float(temperature)) + float(temperatureDewpoint)) / (
+//                112 + (0.9 * float(temperature)))) ** 8), 2))
+        return humidity;
+    }
+
     public void run() {
         int header = 0;
         while(true) {
@@ -85,8 +97,10 @@ public class Server extends Thread {
                         if(dataLine.contains("<VISIB>")){
                             visibility = splitString(dataLine);
                         }
-                        System.out.println(stn);
-                        System.out.println(date);
+
+                        //debugging
+//                        System.out.println(stn);
+//                        System.out.println(date);
 
                     }
 
@@ -94,26 +108,18 @@ public class Server extends Thread {
                         PrintWriter pw = new PrintWriter(new FileOutputStream("test2.csv",true));
                         StringBuilder sb = new StringBuilder();
                         if(header == 0){
-                            pw.write("stn, date, time, temperature, dewpoint, visibility\n");
+                            pw.write("stn, date, time, temperature, dewpoint, visibility, humidity\n");
                             header = 1;
                         }
-                        sb.append(stn);
-                        sb.append(',');
-                        sb.append(date);
-                        sb.append(',');
-                        sb.append(time);
-                        sb.append(',');
-                        sb.append(temperature);
-                        sb.append(',');
-                        sb.append(dewpoint);
-                        sb.append(',');
-                        sb.append(visibility);
-                        sb.append('\n');
+
+
+                        //get the humidity value
+                        double humidty = calculateHumidity(Float.parseFloat(temperature), Float.parseFloat(dewpoint));
 
 
 
-
-                        pw.write(sb.toString());
+                        String row = stn + "," + date + "," + time + "," + "," + temperature + "," + dewpoint + "," + visibility + "," + humidty + "\n";
+                        pw.write(row);
                         pw.close();
                         System.out.println("done!");
                     }
