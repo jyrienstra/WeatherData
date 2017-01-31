@@ -40,12 +40,6 @@ class calculateHumidity extends Command
     public function handle()
     {
 
-        // Delete: \File::delete(storage_path() . '/humidity-hourly/humidity.csv');
-        // Append: \File::append(storage_path() . '/humidity-hourly/humidity.csv', 'content here');
-
-        // Create a new file with no content in it
-        \File::put(storage_path() . '/humidity-hourly/humidity.csv', null);
-
         // Loop recursively over all the files in storage/weatherdata
         $files = \File::allFiles(storage_path() . '/weatherdata');
 
