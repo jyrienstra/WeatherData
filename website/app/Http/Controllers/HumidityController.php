@@ -9,6 +9,13 @@ use Illuminate\Support\Facades\Storage;
 class HumidityController extends Controller
 {
 
+    /**
+     * HumidityController constructor
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     /**
      * Show the data at /humidity
@@ -16,16 +23,26 @@ class HumidityController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function home() {
-        $data = $this->getData();
-        return view('humidity');
+        $data = $this->calculateData();
+        return view('humidity')->with('data', $data);
+    }
+
+    /**
+     * Show the data at /humidity/live/data
+     *
+     * @return JSON
+     */
+    public function getData() {
+        return response()->json($this->calculateData());
     }
 
     /**
      * Filter the data needed for this controller
      *
-     * @return JSON
+     * @return array
      */
-    public function getData() {
+    private function calculateData() {
+
         // Loop recursively over all the files in storage/weatherdata
         $files = \File::allFiles(storage_path() . '/weatherdata');
 
@@ -98,7 +115,8 @@ class HumidityController extends Controller
 
         }
 
-        return response()->json($filteredData);
+        return $filteredData;
+
     }
 
 }
