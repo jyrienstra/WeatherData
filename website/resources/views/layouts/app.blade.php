@@ -22,8 +22,10 @@
 </head>
 <body>
     <div id="app">
-        <div id = "header" class="container">
-            <div id="logo"><img src="{{url('/images/logo.jpg')}}"/></div>
+        <div id = "header">
+			<div class="container" id="logo">
+				<div id="logo"><img src="{{url('/images/logo.jpg')}}"/></div>
+			</div>
         </div>
         <nav class="navbar navbar-default navbar-static-top">
             <div class="container">
