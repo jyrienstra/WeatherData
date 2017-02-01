@@ -110,7 +110,7 @@ class HumidityController extends Controller
                 //$filteredData["temperature"][] = $fullData["temperature"][$key];
                 //$filteredData["dewpoint"][] = $fullData["dewpoint"][$key];
                 //$filteredData["visibility"][] = $fullData["visibility"][$key];
-                $filteredData["humidity"][] = $fullData["visibility"][$key];
+                $filteredData["humidity"][] = $fullData["visibility"][$key]; 
             }
 
         }
