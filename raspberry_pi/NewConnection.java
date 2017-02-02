@@ -2,24 +2,23 @@
 import java.net.*;
 import java.io.*;
 import java.lang.String;
-import org.xml.sax.*;
-import org.w3c.dom.*;
-import javax.xml.parsers.*;
-import java.io.*;
 import java.net.Socket;
-import java.util.*;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 
 public class NewConnection extends Thread{
     private ServerSocket serverSocket;
     private Socket server;
+    private String date;
 
     public NewConnection(Socket server){
         this.server = server;
+        Date systemDate = new Date();
+        this.date = new SimpleDateFormat("yyyy-MM-dd").format(systemDate);
     }
 
 
@@ -41,76 +40,87 @@ public class NewConnection extends Thread{
         return humidity;
     }
 
-    public void run() {
-        int header = 0;
-        try {
-        System.out.println("Just connected to " + server.getRemoteSocketAddress()); //debugging
-        BufferedReader in = new BufferedReader(new InputStreamReader(server.getInputStream())); //create bufferedreader
+    public void writeToFile(String stn, String date, String time, String temp, String dewp, String visib, String humid) {
+        String fileName = "data/" + date + "/" + stn + ".csv";
 
-        String dataLine;
-
-        int read = -1;
-        String stn = "";
-        String date = "";
-        String time = "";
-        String temperature = "";
-        String dewpoint = "";
-        String visibility= "";
-
-        while((dataLine = in.readLine()) != null) { //readline reads 1 lime at the time
-            System.out.println(dataLine);
-            if(dataLine.contains("<MEASUREMENT>")){
-                read = 1;
-            }
-            if(dataLine.contains("</MEASUREMENT>")){
-                read = 0;
-            }
+        //check if file exists so it doens't create random files that we don't need
+        File file = new File(fileName);
+        if(file.exists()) {
+            try {
+                System.out.println(fileName);
+                FileWriter fw = new FileWriter(fileName, true);
+                BufferedWriter bw = new BufferedWriter(fw);
 
 
-            if(read == 1){
-                if(dataLine.contains("<STN>")){
-                    stn = splitString(dataLine); //split the dataline to get the data without the tags
-                }
-                if(dataLine.contains("<DATE>")){
-                    date = splitString(dataLine);
-                }
-                if(dataLine.contains("<TIME>")){
-                    time = splitString(dataLine);
-                }
-                if(dataLine.contains("<TEMP>")){
-                    temperature = splitString(dataLine);
-                }
-                if(dataLine.contains("<DEWP>")){
-                    dewpoint = splitString(dataLine);
-                }
-                if(dataLine.contains("<VISIB>")){
-                    visibility = splitString(dataLine);
-                }
-            }
-
-            if(read == 0){
-                PrintWriter pw = new PrintWriter(new FileOutputStream("test2.csv",true));
-                StringBuilder sb = new StringBuilder();
-                if(header == 0){
-                    pw.write("stn, date, time, temperature, dewpoint, visibility, humidity\n");
-                    header = 1;
-                }
-
-
-                //get the humidity value
-                double humidity = calculateHumidity(Float.parseFloat(temperature), Float.parseFloat(dewpoint));
-
-
-
-                String row = stn + "," + date + "," + time + "," + "," + temperature + "," + dewpoint + "," + visibility + "," + humidity + "\n";
-                pw.write(row);
-                pw.close();
+                String row = date + "," + time + ","  + temp + "," + dewp + "," + visib + "," + humid + "\n";
+                bw.write(row);
+                bw.close();
                 System.out.println("done!");
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
+    }
+
+    public void run() {
+        //int header = 0;
+        try {
+            System.out.println("Just connected to " + server.getRemoteSocketAddress()); //debugging
+            BufferedReader in = new BufferedReader(new InputStreamReader(server.getInputStream())); //create bufferedreader
+
+            String dataLine;
+
+            int read = -1;
+            String stn = "";
+            String date = "";
+            String time = "";
+            String temperature = "";
+            String dewpoint = "";
+            String visibility= "";
+
+            while((dataLine = in.readLine()) != null) { //readline reads 1 lime at the time checks if the buffer is not null
+                //System.out.println(dataLine);
+                if(dataLine.contains("<MEASUREMENT>")){
+                    read = 1;
+                }
+                if(dataLine.contains("</MEASUREMENT>")){
+                    read = 0;
+                }
 
 
-        server.close();
+                if(read == 1){
+                    if(dataLine.contains("<STN>")){
+                        stn = splitString(dataLine); //split the dataline to get the data without the tags
+                    }
+                    if(dataLine.contains("<DATE>")){
+                        date = splitString(dataLine);
+                    }
+                    if(dataLine.contains("<TIME>")){
+                        time = splitString(dataLine);
+                    }
+                    if(dataLine.contains("<TEMP>")){
+                        temperature = splitString(dataLine);
+                    }
+                    if(dataLine.contains("<DEWP>")){
+                        dewpoint = splitString(dataLine);
+                    }
+                    if(dataLine.contains("<VISIB>")){
+                        visibility = splitString(dataLine);
+                    }
+                }
+
+                if(read == 0){
+                    //get the humidity value
+                    double humidity = calculateHumidity(Float.parseFloat(temperature), Float.parseFloat(dewpoint));
+
+                    //write file
+                    writeToFile(stn, date, time, temperature, dewpoint, visibility, String.valueOf(humidity));
+//                WriteFile test = new WriteFile(stn, date, time, temperature, dewpoint, visibility, String.valueOf(humidity));
+//                test.writeToFile();
+                }
+            }
+
+            server.close();
         }catch(IOException e) {
             e.printStackTrace();
         }
