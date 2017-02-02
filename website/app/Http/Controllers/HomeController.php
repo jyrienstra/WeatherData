@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Storage;
 
+use DB;
+
 class HomeController extends Controller
 {
     /**
@@ -23,9 +25,10 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public static function data()
+    public function data()
     {
-        $file = Storage::disk('weatherdata')->get('130670.csv');
+
+        $file = Storage::disk('weatherdata')->get(date('Y-m-d') . '/130670.csv');
 
         //Split the .csv by newline.
         $seperated = explode("\n", $file);
@@ -55,8 +58,13 @@ class HomeController extends Controller
     }
 
     public function top5visibility(){
-        $fullData = HomeController::data();
-        return view('top5visibility', compact('fullData', 'timeexpired'));
+        $visibility = DB::table('average_visibility')
+                            ->where('date', date('Y-m-d'))
+                            ->orderBy('average_visibility', 'desc')
+                            ->limit(5)
+                            ->get()
+                            ->toJson();
+        return view('top5visibility', compact('visibility'));
     }
 
     public function home(){

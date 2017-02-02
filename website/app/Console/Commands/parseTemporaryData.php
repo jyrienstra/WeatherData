@@ -192,43 +192,10 @@ $performance = time();
             // Split the row on commas
             $data = explode(',', $seperated[$i]);
 
-            // Loop through the splitted row
-            /*for($x = 0; $x < count($data); $x++) {
-                // The index of specific data is located in the same index as the label. is.
-                // For example: the first value (index 0) is the temperature.
-                // The first value of the $labels array is temperature, so this data has to be filled in the array he has as value.
-                $fullData[strtolower($labels[$x])][] = $data[$x];
-            }*/
-            //$fullData['visibility'][] = $data[4];
-
             $totalVisibility += $data[4];
             $index++;
 
         }
-
-        // // Current hour (12, or 22 for example)
-        // $now = time();
-        // $temporaryArray = [];
-        //
-        // // Loop over the time array
-        // foreach ($fullData["date"] as $key => $value) {
-        //
-        //     // If the current timestamp is the same as the timestamp in the csv file
-        //     if(strtotime($value) > strtotime('today midnight') && strtotime($value) < strtotime('tomorrow midnight')) {
-        //         //$fulldata = ['topFive' => ['130670' => 156.6, '130671' = 123.4]]
-        //         $temporaryArray[] = $fullData['visibility'][$key];
-        //     }
-        // }
-        //
-        // dd($temporaryArray);
-
-        // $total = 0;
-        // for($i = 0; $i < count($fullData['visibility']); $i++) {
-        //     $total += $fullData['visibility'][$i];
-        // }
-
-
-        //$fullData['averageVisibility'][$weatherdata[$foo]] = $totalVisibility / $index;
 
         DB::table('average_visibility')->insert([
             'station_id' => $weatherdata[$foo],
