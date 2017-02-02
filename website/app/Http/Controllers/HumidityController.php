@@ -105,12 +105,12 @@ class HumidityController extends Controller
             // If the current timestamp is the same as the timestamp in the csv file
             if ($currentHourCSV[0] == $currentHour) {
                 // Add all the data to the $filteredData array
-                $filteredData["date"][] = $fullData["date"][$key];
+                //$filteredData["date"][] = $fullData["date"][$key];
                 $filteredData["time"][] = $fullData["time"][$key];
-                $filteredData["temperature"][] = $fullData["temperature"][$key];
-                $filteredData["dewpoint"][] = $fullData["dewpoint"][$key];
-                $filteredData["visibility"][] = $fullData["visibility"][$key];
-                $filteredData["humidity"][] = $fullData["visibility"][$key];
+                //$filteredData["temperature"][] = $fullData["temperature"][$key];
+                //$filteredData["dewpoint"][] = $fullData["dewpoint"][$key];
+                //$filteredData["visibility"][] = $fullData["visibility"][$key];
+                $filteredData["humidity"][] = $fullData["visibility"][$key]; 
             }
 
         }
