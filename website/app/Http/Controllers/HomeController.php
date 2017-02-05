@@ -31,13 +31,14 @@ class HomeController extends Controller
         $file = Storage::disk('weatherdata')->get(date('Y-m-d') . '/130670.csv');
 
         // Split the .csv by newline.
-        if($windows){
+        if(HomeController::checkOsIsWindows()){
             //os = windows
             $seperated = explode("\r\n", $file);
         }else{
             //os = linux
             $seperated = explode("\n", $file);
         }
+
 
 
         //Get the first value, split by comma and create an array with it. This array contains the measurement types
@@ -103,5 +104,16 @@ class HomeController extends Controller
             fputcsv($output, array($date, $humidity));
         }
         fclose($output);
+    }
+
+    //check if os is running windows
+    private function checkOsIsWindows(){
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            //windows
+            return true;
+        }
+
+        //probably linux
+        return false;
     }
 }

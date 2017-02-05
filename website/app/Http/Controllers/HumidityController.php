@@ -36,6 +36,22 @@ class HumidityController extends Controller
         return response()->json($this->calculateData());
     }
 
+
+    /*
+     * Check if OS = windows
+     *
+     * @return true if Windows is the OS
+     */
+    private function checkOsIsWindows(){
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            //windows
+            return true;
+        }
+
+        //probably linux
+        return false;
+    }
+
     /**
      * Filter the data needed for this controller
      *
@@ -71,14 +87,13 @@ class HumidityController extends Controller
             $file = Storage::disk('weatherdata')->get($fileName);
 
             // Split the .csv by newline.
-            if($windows){
+            if(HumidityController::checkOsIsWindows()){
                 //os = windows
                 $seperated = explode("\r\n", $file);
             }else{
                 //os = linux
                 $seperated = explode("\n", $file);
             }
-
 
             // Get the first value, split by comma and create an array with it. This array contains the measurement types
             $labels = explode(',', array_shift($seperated));
