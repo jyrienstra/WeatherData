@@ -71,7 +71,7 @@ class HumidityController extends Controller
             $file = Storage::disk('weatherdata')->get($fileName);
 
             // Split the .csv by newline.
-            if(windows){
+            if($windows){
                 //os = windows
                 $seperated = explode("\r\n", $file);
             }else{

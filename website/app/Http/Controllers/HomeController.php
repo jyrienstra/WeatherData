@@ -31,7 +31,7 @@ class HomeController extends Controller
         $file = Storage::disk('weatherdata')->get(date('Y-m-d') . '/130670.csv');
 
         // Split the .csv by newline.
-        if(windows){
+        if($windows){
             //os = windows
             $seperated = explode("\r\n", $file);
         }else{
