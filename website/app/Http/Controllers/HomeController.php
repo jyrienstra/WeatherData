@@ -29,6 +29,7 @@ class HomeController extends Controller
     {
 
         $file = Storage::disk('weatherdata')->get(date('Y-m-d') . '/130670.csv');
+        //print($file);
 
         //Split the .csv by newline.
         $seperated = explode("\n", $file);
@@ -70,5 +71,30 @@ class HomeController extends Controller
     public function home(){
        $fullData = HomeController::data();
        return view('home', compact('fullData', 'timeexpired'));
+    }
+
+    //Download the data to csv
+    public function downloadData(){
+        //Set headers so it downloads to csv
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename=unwdmi_data.csv');
+
+        //fileopen = output
+        $output = fopen('php://output', 'w');
+
+        //get the data from data() function
+        $data = HomeController::data();
+
+
+        //write header
+        fputcsv($output, array('date', 'humidity'));
+
+        //write data to csv
+        for($i=0;$i<count($data['date']); $i++){
+            $date = $data['date'][$i];
+            $humidity = $data['humidity'][$i];
+            fputcsv($output, array($date, $humidity));
+        }
+        fclose($output);
     }
 }
