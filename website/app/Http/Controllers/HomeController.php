@@ -66,6 +66,11 @@ class HomeController extends Controller
         return $fullData;
     }
 
+    /*
+     * Calculate the top 5 visibility
+     *
+     * @return view
+     */
     public function top5visibility(){
         $visibility = DB::table('average_visibility')
                             ->where('date', date('Y-m-d'))
@@ -76,12 +81,18 @@ class HomeController extends Controller
         return view('top5visibility', compact('visibility'));
     }
 
+    /*
+     * Show the view
+     */
     public function home(){
        $fullData = HomeController::data();
        return view('home', compact('fullData', 'timeexpired'));
     }
 
-    //Download the data to csv
+    /*
+     * Downloads data to a CSV file
+     *
+     */
     public function downloadData(){
         //Set headers so it downloads to csv
         header('Content-Type: text/csv; charset=utf-8');
@@ -101,12 +112,17 @@ class HomeController extends Controller
         for($i=0;$i<count($data['date']); $i++){
             $date = $data['date'][$i];
             $humidity = $data['humidity'][$i];
+            //add a line
             fputcsv($output, array($date, $humidity));
         }
         fclose($output);
     }
 
-    //check if os is running windows
+    /*
+     * Check if OS = windows
+     *
+     * @return true if Windows is the OS
+     */
     private function checkOsIsWindows(){
         if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
             //windows
