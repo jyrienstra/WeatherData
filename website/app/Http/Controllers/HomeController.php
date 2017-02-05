@@ -29,10 +29,17 @@ class HomeController extends Controller
     {
 
         $file = Storage::disk('weatherdata')->get(date('Y-m-d') . '/130670.csv');
-        //print($file);
 
-        //Split the .csv by newline.
-        $seperated = explode("\n", $file);
+        // Split the .csv by newline.
+        if(windows){
+            //os = windows
+            $seperated = explode("\r\n", $file);
+        }else{
+            //os = linux
+            $seperated = explode("\n", $file);
+        }
+
+
         //Get the first value, split by comma and create an array with it. This array contains the measurement types
         $labels = explode(',', array_shift($seperated));
         //Dynamically fill an array with measurements. ['column_name1' => [], 'column_name2' => ]

@@ -52,6 +52,15 @@ class HumidityController extends Controller
         // Current hour (12, or 22 for example)
         $currentHour = \Carbon\Carbon::now()->hour;
 
+        $windows = true;
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            //os = windows
+            $windows = true;
+        } else {
+            //os = linux
+            $windows = false;
+        }
+
         // For every file, get the filename and loop over its contents
         foreach ($files as $key => $value) {
 
@@ -62,7 +71,14 @@ class HumidityController extends Controller
             $file = Storage::disk('weatherdata')->get($fileName);
 
             // Split the .csv by newline.
-            $seperated = explode("\r\n", $file);
+            if(windows){
+                //os = windows
+                $seperated = explode("\r\n", $file);
+            }else{
+                //os = linux
+                $seperated = explode("\n", $file);
+            }
+
 
             // Get the first value, split by comma and create an array with it. This array contains the measurement types
             $labels = explode(',', array_shift($seperated));
