@@ -23,6 +23,7 @@
 <script>
 
 function updateGraph(data) {
+<<<<<<< HEAD
     console.log(data.stations);
     Highcharts.chart('myChart', {
     chart: {
@@ -57,7 +58,7 @@ function updateGraph(data) {
     credits: {
         enabled: false
     },
-    
+
     series: [{
         name: 'Average Visibility',
         data: data.average
