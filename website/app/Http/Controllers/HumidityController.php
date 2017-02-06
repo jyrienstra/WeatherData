@@ -36,6 +36,22 @@ class HumidityController extends Controller
         return response()->json($this->calculateData());
     }
 
+
+    /*
+     * Check if OS = windows
+     *
+     * @return true if Windows is the OS
+     */
+    private function checkOsIsWindows(){
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            //windows
+            return true;
+        }
+
+        //probably linux
+        return false;
+    }
+
     /**
      * Filter the data needed for this controller
      *
@@ -44,13 +60,21 @@ class HumidityController extends Controller
     private function calculateData() {
 
         // Loop recursively over all the files in storage/weatherdata
-        $files = \File::allFiles(storage_path() . '/weatherdata');
-
+        $files = \File::allFiles(storage_path() . '/weatherdata/'. date('Y-m-d'));
         // The filtered data
         $filteredData = [];
 
         // Current hour (12, or 22 for example)
         $currentHour = \Carbon\Carbon::now()->hour;
+
+        $windows = true;
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            //os = windows
+            $windows = true;
+        } else {
+            //os = linux
+            $windows = false;
+        }
 
         // For every file, get the filename and loop over its contents
         foreach ($files as $key => $value) {
@@ -62,7 +86,13 @@ class HumidityController extends Controller
             $file = Storage::disk('weatherdata')->get($fileName);
 
             // Split the .csv by newline.
-            $seperated = explode("\r\n", $file);
+            if(HumidityController::checkOsIsWindows()){
+                //os = windows
+                $seperated = explode("\r\n", $file);
+            }else{
+                //os = linux
+                $seperated = explode("\n", $file);
+            }
 
             // Get the first value, split by comma and create an array with it. This array contains the measurement types
             $labels = explode(',', array_shift($seperated));

@@ -30,8 +30,17 @@ class HomeController extends Controller
 
         $file = Storage::disk('weatherdata')->get(date('Y-m-d') . '/130670.csv');
 
-        //Split the .csv by newline.
-        $seperated = explode("\n", $file);
+        // Split the .csv by newline.
+        if(HomeController::checkOsIsWindows()){
+            //os = windows
+            $seperated = explode("\r\n", $file);
+        }else{
+            //os = linux
+            $seperated = explode("\n", $file);
+        }
+
+
+
         //Get the first value, split by comma and create an array with it. This array contains the measurement types
         $labels = explode(',', array_shift($seperated));
         //Dynamically fill an array with measurements. ['column_name1' => [], 'column_name2' => ]
@@ -57,6 +66,11 @@ class HomeController extends Controller
         return $fullData;
     }
 
+    /*
+     * Calculate the top 5 visibility
+     *
+     * @return view
+     */
     public function top5visibility(){
         $stations = DB::table('balkan_stations')->get()->toArray();
         
@@ -113,8 +127,55 @@ class HomeController extends Controller
         return $visibility;
     }
 
+    /*
+     * Show the view
+     */
     public function home(){
        $fullData = HomeController::data();
        return view('home', compact('fullData', 'timeexpired'));
+    }
+
+    /*
+     * Downloads data to a CSV file
+     *
+     */
+    public function downloadData(){
+        //Set headers so it downloads to csv
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename=unwdmi_data.csv');
+
+        //fileopen = output
+        $output = fopen('php://output', 'w');
+
+        //get the data from data() function
+        $data = HomeController::data();
+
+
+        //write header
+        fputcsv($output, array('date', 'humidity'));
+
+        //write data to csv
+        for($i=0;$i<count($data['date']); $i++){
+            $date = $data['date'][$i];
+            $humidity = $data['humidity'][$i];
+            //add a line
+            fputcsv($output, array($date, $humidity));
+        }
+        fclose($output);
+    }
+
+    /*
+     * Check if OS = windows
+     *
+     * @return true if Windows is the OS
+     */
+    private function checkOsIsWindows(){
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            //windows
+            return true;
+        }
+
+        //probably linux
+        return false;
     }
 }
