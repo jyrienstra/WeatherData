@@ -61,6 +61,7 @@ class Top5visibilityController extends Controller
      * @return array
      */
     private function calculateData() {
+        $performace = microtime();
         $stations = DB::table('balkan_stations')->get()->toArray();
         DB::table('average_visibility')->where('date', date('Y-m-d'))->delete();
 
@@ -107,7 +108,7 @@ class Top5visibilityController extends Controller
             }
             if($index) {
                 DB::table('average_visibility')->insert([
-                    'station_id' => $station->id,
+                    'station_id' => $station->balkan_station,
                     'average_visibility' => $totalVisibility / $index,
                     'date' => date('Y-m-d')
                 ]);
@@ -116,13 +117,19 @@ class Top5visibilityController extends Controller
 
         $visibility = DB::table('average_visibility')
                             ->where('date', date('Y-m-d'))
-                            ->orderBy('average_visibility', 'desc')
+                            ->leftJoin('stations', 'average_visibility.station_id', '=', 'stations.stn')
+                            ->orderBy('average_visibility.average_visibility', 'desc')
                             ->limit(5)
                             ->get();
 
-        dd($visibility);
+        $ikbengewooneenarray = [];
+        for($bart = 0; $bart < count($visibility); $bart++) {
+            $ikbengewooneenarray['station'][] = ucfirst(strtolower($visibility[$bart]->name)) . ', ' . ucfirst(strtolower($visibility[$bart]->country));
+            $ikbengewooneenarray['average'][] = $visibility[$bart]->average_visibility;
+            $ikbengewooneenarray['performace'] = microtime() - $performace;
+        }
 
-        return $visibility;
+        return $ikbengewooneenarray;
     }
 
 }
