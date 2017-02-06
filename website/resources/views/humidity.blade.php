@@ -61,7 +61,6 @@ function getData(){
 		type: 'GET',
 		dataType: 'JSON',
 		success: function(res) {
-        console.log(res);
 		updateGraph(res)
 		}
 	});
