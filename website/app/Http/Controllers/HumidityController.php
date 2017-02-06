@@ -131,8 +131,9 @@ class HumidityController extends Controller
             // Explode the timestamp (h:m:s)
             $currentHourCSV = explode(':', $value);
 
+
             // If the current timestamp is the same as the timestamp in the csv file
-            if ($currentHourCSV[0] == $currentHour) {
+            if ($currentHourCSV[0] == $currentHour && $currentHourCSV[2] % 10 == 0) {
                 // Add all the data to the $filteredData array
                 //$filteredData["date"][] = $fullData["date"][$key];
                 $filteredData["time"][] = $fullData["time"][$key];
