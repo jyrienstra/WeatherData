@@ -8,6 +8,26 @@
                 <div class="panel-heading">Top 5 balkan</div>
 
                 <div class="panel-body">
+                    <div class="form-group">
+                        <label for="date">Select date</label>
+
+                        <select id="date" name="date" class="form-control" />
+                        @foreach ($dates as $key => $value)
+                            @if($requestDate == null && $value->date == date('Y-m-d'))
+                                <option selected>{{$value->date}}</option>
+                            @elseif ($requestDate == $value->date)
+                                <option selected>{{$value->date}}</option>
+                            @else
+                                <option>{{$value->date}}</option>
+                            @endif
+                        @endforeach
+                        </select>
+                    </div>
+                    <script>
+                    $('#date').change(function () {
+                        location.href = '<?php $_SERVER['HTTP_HOST']; ?>' + '/top5visibility/' + $('#date').val();
+                    })
+                    </script>
                     <div class="chartWrapper">
                         <div class="chartAreaWrapper">
                             <div id="myChart" height="500" width="100%"></div>
@@ -66,7 +86,7 @@ function updateGraph(data) {
 
 window.onload=  function(){
 	$.ajax({
-		url: 'top5visibility/live/data',
+		url: location.href + '/live/data',
 		type: 'GET',
 		dataType: 'JSON',
 		success: function(res) {

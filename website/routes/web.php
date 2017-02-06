@@ -19,7 +19,8 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@home');
 
-Route::get('/top5visibility', 'Top5visibilityController@home');
+Route::get('/top5visibility/{requestDate?}', 'Top5visibilityController@home');
+Route::get('/top5visibility/{date}/live/data', 'Top5visibilityController@getData');
 Route::get('/top5visibility/live/data', 'Top5visibilityController@getData');
 
 Route::get('/humidity', 'HumidityController@home');

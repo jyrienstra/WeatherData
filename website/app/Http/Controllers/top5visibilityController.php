@@ -25,9 +25,10 @@ class Top5visibilityController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function home() {
-        $data = $this->calculateData(date('Y-m-d'));
-        return view('top5visibility')->with('data', $data);
+    public function home($requestDate = null) {
+        $dates = DB::table('average_visibility')->select(DB::raw('DISTINCT date'))->get();
+        $data = $this->calculateData($requestDate !== null ? $requestDate : date('Y-m-d'));
+        return view('top5visibility', compact('data', 'dates', 'requestDate'));
     }
 
     /**
@@ -35,15 +36,9 @@ class Top5visibilityController extends Controller
      *
      * @return JSON
      */
-    public function getData(Request $request) {
-        if($request->date != "") {
-            $date = $request->date;
-        }
-        else{
-            $date = date('Y-m-d');
-        }
+    public function getData(Request $request, $date = null) {
 
-        return response()->json($this->calculateData($date));
+        return response()->json($this->calculateData($date !== null ? $date : date('Y-m-d')));
     }
 
 
@@ -128,7 +123,7 @@ class Top5visibilityController extends Controller
 
         $visibility = DB::table('average_visibility')
                             ->where('date', $date)
-                            ->leftJoin('stations', 'average_visibility.station_id', '=', 'stations.stn')
+                            ->join('stations', 'average_visibility.station_id', '=', 'stations.stn')
                             ->orderBy('average_visibility.average_visibility', 'desc')
                             ->limit(5)
                             ->get();
