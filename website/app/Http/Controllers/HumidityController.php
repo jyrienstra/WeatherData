@@ -23,8 +23,7 @@ class HumidityController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function home() {
-        $data = $this->calculateData();
-        return view('humidity')->with('data', $data);
+        return view('humidity');
     }
 
     /**
@@ -32,8 +31,8 @@ class HumidityController extends Controller
      *
      * @return JSON
      */
-    public function getData() {
-        return response()->json($this->calculateData());
+    public function getData($id) {
+        return response()->json($this->calculateData($id));
     }
 
 
@@ -57,10 +56,8 @@ class HumidityController extends Controller
      *
      * @return array
      */
-    private function calculateData() {
+    private function calculateData($id) {
 
-        // Loop recursively over all the files in storage/weatherdata
-        $files = \File::allFiles(storage_path() . '/weatherdata/'. date('Y-m-d'));
         // The filtered data
         $filteredData = [];
 
@@ -76,54 +73,50 @@ class HumidityController extends Controller
             $windows = false;
         }
 
-        // For every file, get the filename and loop over its contents
-        foreach ($files as $key => $value) {
 
-            // Get the filename
-            $fileName = $value->getFilename();
-            // Get the file contents based on the filename
-            $file = Storage::disk('weatherdata')->get(date('Y-m-d') . '/' . $fileName);
+        // Search for the file given by the GET parameter
+        $file = Storage::disk('weatherdata')->get(date('Y-m-d') . '/'.$id.'.csv');
 
-            // Split the .csv by newline.
-            if(HumidityController::checkOsIsWindows()){
-                //os = windows
-                $seperated = explode("\r\n", $file);
-            }else{
-                //os = linux
-                $seperated = explode("\n", $file);
-            }
+        // Split the .csv by newline.
+        if (HumidityController::checkOsIsWindows()){
+            //os = windows
+            $seperated = explode("\r\n", $file);
+        } else{
+            //os = linux
+            $seperated = explode("\n", $file);
+        }
 
-            // Get the first value, split by comma and create an array with it. This array contains the measurement types
-            $labels = explode(',', array_shift($seperated));
+        // Get the first value, split by comma and create an array with it. This array contains the measurement types
+        $labels = explode(',', array_shift($seperated));
 
-            // Dynamically fill an array with measurements. [ 'column_name1' => [], 'column_name2' => [] ]
-            for ($y = 0; $y < count($labels); $y++) {
-                if (!isset($fullData)) {
-                    $fullData[strtolower($labels[$y])] = [];
-                }
-            }
-
-            // Loop through all rows (except for the first one)
-            for ($i = 0; $i < count($seperated); $i++) {
-
-                //If there is an empty row, skip it
-                if (empty(trim($seperated[$i]))) {
-                    continue;
-                }
-
-                // Split the row on commas
-                $data = explode(',', $seperated[$i]);
-
-                // Loop through the splitted row
-                for ($x = 0; $x < count($data); $x++) {
-                    // The index of specific data is located in the same index as the label. is.
-                    // For example: the first value (index 0) is the temperature.
-                    // The first value of the $labels array is temperature, so this data has to be filled in the array he has as value.
-                    $fullData[strtolower($labels[$x])][] = $data[$x];
-                }
-
+        // Dynamically fill an array with measurements. [ 'column_name1' => [], 'column_name2' => [] ]
+        for ($y = 0; $y < count($labels); $y++) {
+            if (!isset($fullData)) {
+                $fullData[strtolower($labels[$y])] = [];
             }
         }
+
+        // Loop through all rows (except for the first one)
+        for ($i = 0; $i < count($seperated); $i++) {
+
+            //If there is an empty row, skip it
+            if (empty(trim($seperated[$i]))) {
+                continue;
+            }
+
+            // Split the row on commas
+            $data = explode(',', $seperated[$i]);
+
+            // Loop through the splitted row
+            for ($x = 0; $x < count($data); $x++) {
+                // The index of specific data is located in the same index as the label. is.
+                // For example: the first value (index 0) is the temperature.
+                // The first value of the $labels array is temperature, so this data has to be filled in the array he has as value.
+                $fullData[strtolower($labels[$x])][] = $data[$x];
+            }
+
+        }
+
 
         // Loop over the time array
         foreach ($fullData["time"] as $key => $value) {
