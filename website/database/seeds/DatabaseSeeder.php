@@ -1,17 +1,19 @@
 <?php
-
 use Illuminate\Database\Seeder;
+use Illuminate\Database\Eloquent\Model;
 
-class DatabaseSeeder extends Seeder
-{
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
-    {
-    	// Run the database seed for the UsersTableSeeder class
-        $this->call(UsersTableSeeder::class);
-    }
+class DatabaseSeeder extends Seeder {
+
+/**
+ * Run the database seeds.
+ *
+ * @return void
+ */
+   public function run()
+   {
+
+       // $this->call('UserTableSeeder');
+       $this->call(SeedBalkan::class);
+   }
+
 }
