@@ -25,10 +25,10 @@
 function updateGraph(data) {
 	var ctx = document.getElementById("myChart").getContext("2d");
     var data = {
-        labels: data.station,
+        labels: data.average,
         datasets: [{
             label: 'Temperatuur per dag',
-            data: data.average,
+            data: data.station,
             fillColor: "rgba(220,220,220,0.2)",
             strokeColor: "rgba(220,220,220,1)",
             pointColor: "rgba(220,220,220,1)",
