@@ -42,7 +42,7 @@ class HumidityController extends Controller
      *
      * @return true if Windows is the OS
      */
-    private function checkOsIsWindows(){
+    private static function checkOsIsWindows(){
         if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
             //windows
             return true;
@@ -81,9 +81,8 @@ class HumidityController extends Controller
 
             // Get the filename
             $fileName = $value->getFilename();
-
             // Get the file contents based on the filename
-            $file = Storage::disk('weatherdata')->get($fileName);
+            $file = Storage::disk('weatherdata')->get(date('Y-m-d') . '/' . $fileName);
 
             // Split the .csv by newline.
             if(HumidityController::checkOsIsWindows()){
@@ -140,7 +139,7 @@ class HumidityController extends Controller
                 //$filteredData["temperature"][] = $fullData["temperature"][$key];
                 //$filteredData["dewpoint"][] = $fullData["dewpoint"][$key];
                 //$filteredData["visibility"][] = $fullData["visibility"][$key];
-                $filteredData["humidity"][] = $fullData["visibility"][$key]; 
+                $filteredData["humidity"][] = $fullData["visibility"][$key];
             }
 
         }
