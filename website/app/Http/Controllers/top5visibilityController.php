@@ -39,7 +39,7 @@ class Top5visibilityController extends Controller
         if($request->date != "") {
             $date = $request->date;
         }
-        else {
+        else{
             $date = date('Y-m-d');
         }
 
