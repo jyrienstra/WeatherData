@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-md-12 col-md-offset-0">
             <div class="panel panel-default">
-                <div class="panel-heading">Dashboard</div>
+                <div class="panel-heading">Humidity</div>
 
                 <div class="panel-body">
                     <div class="chartWrapper">
@@ -56,6 +56,7 @@ function updateGraph(data) {
     });
 }
 function getData(){
+
 	$.ajax({
 		url: 'humidity/live/data',
 		type: 'GET',
