@@ -23,47 +23,45 @@
 <script>
 
 function updateGraph(data) {
-<<<<<<< HEAD
-    console.log(data.stations);
     Highcharts.chart('myChart', {
-    chart: {
-        type: 'bar'
-    },
-    title: {
-        text: 'Top 5 visibility in the Balkan area'
-    },
-    xAxis: {
-        categories: data.station,
-        title: {
-            text: null
-        }
-    },
-    yAxis: {
-        min: 0,
-        title: {
-            text: 'Visibility (kilometers)',
-            align: 'high'
+        chart: {
+            type: 'bar'
         },
-        labels: {
-            overflow: 'justify'
-        }
-    },
-    plotOptions: {
-        bar: {
-            dataLabels: {
-                enabled: true
+        title: {
+            text: 'Top 5 visibility in the Balkan area'
+        },
+        xAxis: {
+            categories: data.station,
+            title: {
+                text: null
             }
-        }
-    },
-    credits: {
-        enabled: false
-    },
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'Visibility (kilometers)',
+                align: 'high'
+            },
+            labels: {
+                overflow: 'justify'
+            }
+        },
+        plotOptions: {
+            bar: {
+                dataLabels: {
+                    enabled: true
+                }
+            }
+        },
+        credits: {
+            enabled: false
+        },
 
-    series: [{
-        name: 'Average Visibility',
-        data: data.average
-    }]
-});
+        series: [{
+            name: 'Average Visibility',
+            data: data.average
+        }]
+    });
 }
 
 window.onload=  function(){
