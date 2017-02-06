@@ -26,7 +26,7 @@ class Top5visibilityController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function home() {
-        $data = $this->calculateData();
+        $data = $this->calculateData(date('Y-m-d'));
         return view('top5visibility')->with('data', $data);
     }
 
