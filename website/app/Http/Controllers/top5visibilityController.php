@@ -6,11 +6,11 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 
-class HumidityController extends Controller
+class top5visibilityController extends Controller
 {
 
     /**
-     * HumidityController constructor
+     * top5visibilityController constructor
      */
     public function __construct()
     {
@@ -24,11 +24,11 @@ class HumidityController extends Controller
      */
     public function home() {
         $data = $this->calculateData();
-        return view('humidity')->with('data', $data);
+        return view('top5visibility')->with('data', $data);
     }
 
     /**
-     * Show the data at /humidity/live/data
+     * Show the data at /top5/live/data
      *
      * @return JSON
      */
