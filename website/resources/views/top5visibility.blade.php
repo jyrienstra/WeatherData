@@ -10,7 +10,7 @@
                 <div class="panel-body">
                     <div class="chartWrapper">
                         <div class="chartAreaWrapper">
-                            <canvas id="myChart" height="500" width="1000px"></canvas>
+                            <canvas id="myChart" height="500" width="100%"></canvas>
                         </div>
                         <canvas id="myChartAxis" height="500" width="0"></canvas>
                     </div>
