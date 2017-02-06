@@ -136,7 +136,7 @@ class Top5visibilityController extends Controller
         $ikbengewooneenarray = [];
         for($bart = 0; $bart < count($visibility); $bart++) {
             $ikbengewooneenarray['station'][] = ucfirst(strtolower($visibility[$bart]->name)) . ', ' . ucfirst(strtolower($visibility[$bart]->country));
-            $ikbengewooneenarray['average'][] = $visibility[$bart]->average_visibility;
+            $ikbengewooneenarray['average'][] = round($visibility[$bart]->average_visibility, 2);
             $ikbengewooneenarray['performace'] = microtime() - $performace;
         }
 

@@ -10,7 +10,7 @@
                 <div class="panel-body">
                     <div class="chartWrapper">
                         <div class="chartAreaWrapper">
-                            <canvas id="myChart" height="500" width="100%"></canvas>
+                            <div id="myChart" height="500" width="100%"></div>
                         </div>
                         <canvas id="myChartAxis" height="500" width="0"></canvas>
                     </div>
@@ -23,37 +23,46 @@
 <script>
 
 function updateGraph(data) {
-	var ctx = document.getElementById("myChart").getContext("2d");
-    var data = {
-        labels: data.average,
-        datasets: [{
-            label: 'Temperatuur per dag',
-            data: data.station,
-            fillColor: "rgba(220,220,220,0.2)",
-            strokeColor: "rgba(220,220,220,1)",
-            pointColor: "rgba(220,220,220,1)",
-            pointStrokeColor: "#fff",
-            pointHighlightFill: "#fff",
-            pointHighlightStroke: "rgba(220,220,220,1)",
-        }],
-        options: {
-			maintainAspectRatio: true,
-			responsive: false
-		}
-    };
-    new Chart(ctx).Bar(data, {
-        onAnimationComplete: function () {
-            var sourceCanvas = this.chart.ctx.canvas;
-
-                var copyWidth = this.scale.xScalePaddingLeft - 5;
-                // the +5 is so that the bottommost y axis label is not clipped off
-                // we could factor this in using measureText if we wanted to be generic
-                var copyHeight = this.scale.endPoint + 5;
-                var targetCtx = document.getElementById("myChartAxis").getContext("2d");
-                targetCtx.canvas.width = copyWidth;
-                targetCtx.drawImage(sourceCanvas, 0, 0, copyWidth, copyHeight, 0, 0, copyWidth, copyHeight);
+    console.log(data.stations);
+    Highcharts.chart('myChart', {
+    chart: {
+        type: 'bar'
+    },
+    title: {
+        text: 'Top 5 visibility in the Balkan area'
+    },
+    xAxis: {
+        categories: data.station,
+        title: {
+            text: null
         }
-    });
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: 'Visibility (kilometers)',
+            align: 'high'
+        },
+        labels: {
+            overflow: 'justify'
+        }
+    },
+    plotOptions: {
+        bar: {
+            dataLabels: {
+                enabled: true
+            }
+        }
+    },
+    credits: {
+        enabled: false
+    },
+    
+    series: [{
+        name: 'Average Visibility',
+        data: data.average
+    }]
+});
 }
 
 window.onload=  function(){
