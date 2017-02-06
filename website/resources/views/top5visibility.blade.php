@@ -37,8 +37,6 @@ function updateGraph(data) {
             pointHighlightStroke: "rgba(220,220,220,1)",
         }],
         options: {
-			maintainAspectRatio: true,
-			responsive: false
 		}
     };
     new Chart(ctx).Bar(data, {
