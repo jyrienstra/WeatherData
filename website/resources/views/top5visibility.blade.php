@@ -9,6 +9,7 @@
 
                 <div class="panel-body">
                     <div class="form-group">
+                        <h3>You are currently viewing the date of {{date('d-m-Y', strtotime($requestDate))}}</h3>
                         <label for="date">Select date</label>
 
                         <select id="date" name="date" class="form-control" />
@@ -22,8 +23,6 @@
                             @endif
                         @endforeach
                         </select>
-
-                        <a href="#" style="margin-top:5px;" class="btn btn-default"><span class="fa fa-download"></span> Download current data to csv</a>
                     </div>
                     <script>
                     $('#date').change(function () {
@@ -34,8 +33,12 @@
                         <div class="chartAreaWrapper">
                             <div id="myChart" height="500" width="100%"></div>
                         </div>
-                        <canvas id="myChartAxis" height="500" width="0"></canvas>
                     </div>
+                    <hr />
+                    <a href="" id="downloadCsv" style="margin-top:5px;" class="btn btn-default pull-right"><span class="fa fa-download"></span> Download current data to csv</a>
+                        <script>
+                            $('#downloadCsv').attr("href", '<?php $_SERVER['HTTP_HOST']; ?>' + '/top5visibility/' + $('#date').val() + '/download');
+                        </script>
                 </div>
             </div>
         </div>
