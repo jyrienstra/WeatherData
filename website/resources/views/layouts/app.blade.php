@@ -85,6 +85,12 @@
         <div id="background-container">
             @yield('content')
         </div>
+
+        <footer class="footer">
+            <div class="container text-center">
+                <span class="text-muted">Made with <span style="color: #ff0000;">❤</span> by Team Schnitzel (Danny, Jouke, Joost, Matthijs, Bart, Eran). This website is for educational purposes</span>
+            </div>
+        </footer>
     </div>
 
     <!-- Scripts -->

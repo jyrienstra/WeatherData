@@ -5,9 +5,9 @@
     <div class="row">
         <div class="col-md-12 col-md-offset-0">
             <div class="panel panel-default">
-                <div class="panel-heading">Top 5 balkan</div>
+                <div class="panel-heading">Humidity</div>
                 <div class="panel-body">
-					  <select id="station" onchange="stationChange()"></select>
+					  <select id="station" class="form-control" onchange="stationChange()"></select>
                       <p id="error"></p>
                     <div class="chartWrapper">
                         <div class="chartAreaWrapper">
