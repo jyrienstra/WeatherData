@@ -15,6 +15,7 @@
                         </div>
                         <canvas id="myChartAxis" height="500" width="0"></canvas>
                     </div>
+                    <a href="" id="downloadCsv" style="margin-top:5px;" class="btn btn-default pull-right"><span class="fa fa-download"></span> Download current data to csv</a>
                 </div>
             </div>
         </div>
@@ -78,7 +79,6 @@ function drawGraph(id){
                 if(chart != undefined) {
                     chart.destroy();
                 }
-
 		        $('#error').text('Er is geen data beschikbaar voor dit station dat overeenkomt met het huidige uur');
             }else{
                 $('#error').text('');
@@ -92,6 +92,8 @@ function stationChange() {
 	var id = document.getElementById("station").value;
     drawGraph(id);
     intervalUpdate(id);
+    $('#downloadCsv').attr("href", '<?php $_SERVER['HTTP_HOST']; ?>' + '/humidity/' + id + '/download');
+
 }
 window.onload=  function(){
 	var elt;
