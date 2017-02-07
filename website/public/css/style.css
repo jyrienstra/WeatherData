@@ -1,12 +1,26 @@
 .btn-default{
-    border: solid 1px;
-    color: #333;
-    background-color: #fff;
-    border-color: #ccc;
+    border: solid 1px !important;
+    color: #333 !important;
+    background-color: #fff !important;
+    border-color: #ccc!important;
 }
 .btn-default:hover{
     background-color: #023065 !important;
+    color: #fff !important;
 }
 .btn-default:active{
-    background-color: #fff;
+    border: solid 1px !important;
+    color: #333 !important;
+    background-color: #fff !important;
+    border-color: #ccc !important;
+}
+.btn-default:visited{
+    border: solid 1px !important;
+    color: #333 !important;
+    background-color: #fff !important;
+    border-color: #ccc !important;
+}
+.btn-default:visited:hover{
+    color: #fff !important;
+    background-color: #023065 !important;
 }
