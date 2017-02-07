@@ -50,19 +50,40 @@ def weather_server(processes, threads):
 
 
 def station_process(threads, server_socket, check, filter_list):
+    """
+    A function that runs the given amount of station_server Threads
+    :param threads: The amount of max threads
+    :param server_socket: The socket to listen to
+    :param check: A variable that stays true until the server must be killed
+    :param filter_list: A list with stations to filter on
+    """
+
+    # The initial amount of threads
     i = 0
+
+    # While check is True
     while check:
-        while i < threads:
+        # While
+        # while i < threads:
+        if True:
+            # Accept the incoming connection.
             connection, address = server_socket.accept()
+            # Retrieve the port and ip the connection is coming from.
             ip, port = str(address[0]), str(address[1])
+            # Inform server user about new connection
             print("Connected on {}:{}".format(ip, port))
+            # Try to create a new thread
             try:
                 Thread(target=station_thread, args=(connection, ip, port, filter_list)).start()
+                # Incase a new thread gets created, add 1 to the amount of threads.
                 i += 1
+            # Incase the Thread creation fail, free up an extra thread spot.
             except:
+                # Print the error information
                 import traceback
                 traceback.print_exc()
                 i -= 1
+    # When this part is reached, the connection gets closed.
     server_socket.close()
 
 
