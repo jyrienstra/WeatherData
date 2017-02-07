@@ -8,6 +8,7 @@
                 <div class="panel-heading">Top 5 balkan</div>
                 <div class="panel-body">
 					  <select id="station" onchange="stationChange()"></select>
+                      <p id="error"></p>
                     <div class="chartWrapper">
                         <div class="chartAreaWrapper">
                             <div id="myChart" height="500" width="100%"></div>
@@ -70,7 +71,11 @@ function drawGraph(id){
 		type: 'GET',
 		dataType: 'JSON',
 		success: function(res) {
-		    updateGraph(res)
+		    if(res == false){
+		        $('#error').text('Er is geen data beschikbaar voor dit station dat overeenkomt met het huidige uur');
+            }else{
+                updateGraph(res)
+            }
 		}
 	});
 }

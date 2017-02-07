@@ -153,8 +153,16 @@ class HumidityController extends Controller
 
         }
 
-        return $filteredData;
-
+        //Als de array empty is
+        if(count($filteredData) ==  0){
+            //Geen data match met het huidige uur dus een lege array
+            //Report error
+            return false;
+        }else{
+            //Als de array wel is gevuld
+            //Return array
+            return $filteredData;
+        }
     }
 
 }
