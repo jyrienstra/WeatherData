@@ -15,7 +15,8 @@ class CreateAvarageVisibilityTable extends Migration
     public function up()
     {
         Schema::create('average_visibility', function (Blueprint $table) {
-            $table->increments('station_id');
+            $table->increments('id');
+            $table->integer('station_id');
             $table->float('average_visibility', 8, 2); //float 8 big with 2 decimals
             $table->date('date');
             $table->timestamps();
