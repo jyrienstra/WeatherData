@@ -183,15 +183,20 @@ def write_to_file(data_list):
     A function that writes a given data list to a station csv file
     :param data_list: A list with measurements to write
     """
+    # Get the current date.
     date = datetime.date.today()
+    # Make a dir path using the current date.
     date_path = "data/{}".format(date)
 
+    # Open a file using the date path and stationnumber
     csv_file = open("{}/{}.csv".format(date_path, data_list[0]), 'a')
+    # Write the measurements to the stationfile.
     csv_file.write(
         "{},{},{},{},{},{}\n".format(data_list[1], data_list[2], data_list[3], data_list[4],
                                      data_list[7],
                                      data_list[8]))
 
+    # Close the stationfile.
     csv_file.close()
 
 
