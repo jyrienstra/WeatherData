@@ -95,8 +95,14 @@ window.onload=  function(){
 		type: 'GET',
 		dataType: 'JSON',
 		success: function(res) {
+            if(res.length < 1) {
+                $('.chartAreaWrapper').append('<div class="alert">There is no data for this day</div>');
+            }
+            else {
+                updateGraph(res)
+            }
 		//console.log(res)
-		updateGraph(res)
+
 		}
 	});
 };

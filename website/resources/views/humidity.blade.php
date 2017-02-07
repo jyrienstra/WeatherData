@@ -27,12 +27,14 @@
 </script>
 <script src="{{url('/js/chart.js')}}"></script>
 <script>
-
+var chart;
 function updateGraph(data) {
-
+    if(chart != undefined) {
+        chart.destroy();
+    }
     var arrayOfStrings = data.humidity;
     var humidity = arrayOfStrings.map(Number);
-    Highcharts.chart('myChart', {
+    chart = Highcharts.chart('myChart', {
 
         title: {
             text: 'Humidity',
@@ -75,6 +77,7 @@ function drawGraph(id){
 		        $('#error').text('Er is geen data beschikbaar voor dit station dat overeenkomt met het huidige uur');
             }else{
                 updateGraph(res)
+                return false;
             }
 		}
 	});
@@ -90,7 +93,7 @@ window.onload=  function(){
 		 url: '/humidity/stations',
 		 type: 'GET',
 		 dataType: 'JSON',
-		 success: function(res) {	
+		 success: function(res) {
 			var numbers = res;
 			var option = '<option>Select station</option>';
 			for (var i=0;i<numbers.length;i++){
@@ -102,7 +105,9 @@ window.onload=  function(){
 };
 
 var intervalUpdate = function(id) {
-    setInterval(drawGraph(id), 10000);
+    setInterval(function () {
+        drawGraph(id);
+    }, 10000);
 }
 </script>
 @endsection
