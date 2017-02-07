@@ -28,6 +28,7 @@
 <script>
 
 function updateGraph(data) {
+
     var arrayOfStrings = data.humidity;
     var humidity = arrayOfStrings.map(Number);
     Highcharts.chart('myChart', {
@@ -76,6 +77,7 @@ function drawGraph(id){
 function stationChange() {
 	var id = document.getElementById("station").value;
     drawGraph(id);
+    intervalUpdate(id);
 }
 window.onload=  function(){
 	var elt;
@@ -93,5 +95,9 @@ window.onload=  function(){
 		}
 	 });
 };
+
+var intervalUpdate = function(id) {
+    setInterval(drawGraph(id), 10000);
+}
 </script>
 @endsection
