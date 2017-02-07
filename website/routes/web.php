@@ -24,7 +24,7 @@ Route::get('/top5visibility/{date}/live/data', 'Top5visibilityController@getData
 Route::get('/top5visibility/live/data', 'Top5visibilityController@getData');
 
 Route::get('/humidity', 'HumidityController@home');
-
+Route::get('/humidity/stations', 'HumidityController@getStations');
 Route::get('/humidity/live/data/{id}', 'HumidityController@getData');
 
 Route::get('/download', 'HomeController@downloadData');
