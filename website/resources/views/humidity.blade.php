@@ -75,7 +75,10 @@ function drawGraph(id){
 		dataType: 'JSON',
 		success: function(res) {
 		    if(res == false){
-                chart.destroy();
+                if(chart != undefined) {
+                    chart.destroy();
+                }
+
 		        $('#error').text('Er is geen data beschikbaar voor dit station dat overeenkomt met het huidige uur');
             }else{
                 updateGraph(res)

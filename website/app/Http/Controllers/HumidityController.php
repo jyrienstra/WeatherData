@@ -23,7 +23,7 @@ class HumidityController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function home() {	
+    public function home() {
 		return view('humidity');
     }
 
@@ -88,69 +88,72 @@ class HumidityController extends Controller
 
 
         // Search for the file given by the GET parameter
-        $file = Storage::disk('weatherdata')->get(date('Y-m-d') . '/'.$id.'.csv');
+        if(Storage::disk('weatherdata')->exists(date('Y-m-d') . '/'.$id.'.csv')) {
 
-        // Split the .csv by newline.
-        if (HumidityController::checkOsIsWindows()){
-            //os = windows
-            $seperated = explode("\n", $file);
-        } else{
-            //os = linux
-            $seperated = explode("\n", $file);
-        }
-        // Get the first value, split by comma and create an array with it. This array contains the measurement types
-        $labels = explode(',', array_shift($seperated));
-		
-		
+            $file = Storage::disk('weatherdata')->get(date('Y-m-d') . '/'.$id.'.csv');
 
-        // Dynamically fill an array with measurements. [ 'column_name1' => [], 'column_name2' => [] ]
-        for ($y = 0; $y < count($labels); $y++) {
-            if (!isset($fullData)) {
-                $fullData[strtolower($labels[$y])] = [];
+            // Split the .csv by newline.
+            if (HumidityController::checkOsIsWindows()){
+                //os = windows
+                $seperated = explode("\n", $file);
+            } else{
+                //os = linux
+                $seperated = explode("\n", $file);
             }
-        }
-		
+            // Get the first value, split by comma and create an array with it. This array contains the measurement types
+            $labels = explode(',', array_shift($seperated));
 
-        // Loop through all rows (except for the first one)
-        for ($i = 0; $i < count($seperated); $i++) {
 
-            //If there is an empty row, skip it
-            if (empty(trim($seperated[$i]))) {
-                continue;
+
+            // Dynamically fill an array with measurements. [ 'column_name1' => [], 'column_name2' => [] ]
+            for ($y = 0; $y < count($labels); $y++) {
+                if (!isset($fullData)) {
+                    $fullData[strtolower($labels[$y])] = [];
+                }
             }
 
-            // Split the row on commas
-            $data = explode(',', $seperated[$i]);
 
-            // Loop through the splitted row
-            for ($x = 0; $x < count($data); $x++) {
-                // The index of specific data is located in the same index as the label. is.
-                // For example: the first value (index 0) is the temperature.
-                // The first value of the $labels array is temperature, so this data has to be filled in the array he has as value.
-                $fullData[strtolower($labels[$x])][] = $data[$x];
+            // Loop through all rows (except for the first one)
+            for ($i = 0; $i < count($seperated); $i++) {
+
+                //If there is an empty row, skip it
+                if (empty(trim($seperated[$i]))) {
+                    continue;
+                }
+
+                // Split the row on commas
+                $data = explode(',', $seperated[$i]);
+
+                // Loop through the splitted row
+                for ($x = 0; $x < count($data); $x++) {
+                    // The index of specific data is located in the same index as the label. is.
+                    // For example: the first value (index 0) is the temperature.
+                    // The first value of the $labels array is temperature, so this data has to be filled in the array he has as value.
+                    $fullData[strtolower($labels[$x])][] = $data[$x];
+                }
+
             }
 
-        }
+
+            // Loop over the time array
+            foreach ($fullData["time"] as $key => $value) {
+
+                // Explode the timestamp (h:m:s)
+                $currentHourCSV = explode(':', $value);
 
 
-        // Loop over the time array
-        foreach ($fullData["time"] as $key => $value) {
+                // If the current timestamp is the same as the timestamp in the csv file
+                if ($currentHourCSV[0] == $currentHour && $currentHourCSV[2] % 10 == 0) {
+                    // Add all the data to the $filteredData array
+                    //$filteredData["date"][] = $fullData["date"][$key];
+                    $filteredData["time"][] = $fullData["time"][$key];
+                    //$filteredData["temperature"][] = $fullData["temperature"][$key];
+                    //$filteredData["dewpoint"][] = $fullData["dewpoint"][$key];
+                    //$filteredData["visibility"][] = $fullData["visibility"][$key];
+                    $filteredData["humidity"][] = $fullData["visibility"][$key];
+                }
 
-            // Explode the timestamp (h:m:s)
-            $currentHourCSV = explode(':', $value);
-
-
-            // If the current timestamp is the same as the timestamp in the csv file
-            if ($currentHourCSV[0] == $currentHour && $currentHourCSV[2] % 10 == 0) {
-                // Add all the data to the $filteredData array
-                //$filteredData["date"][] = $fullData["date"][$key];
-                $filteredData["time"][] = $fullData["time"][$key];
-                //$filteredData["temperature"][] = $fullData["temperature"][$key];
-                //$filteredData["dewpoint"][] = $fullData["dewpoint"][$key];
-                //$filteredData["visibility"][] = $fullData["visibility"][$key];
-                $filteredData["humidity"][] = $fullData["visibility"][$key];
             }
-
         }
 
         //Als de array empty is
