@@ -22,6 +22,8 @@
                             @endif
                         @endforeach
                         </select>
+
+                        <a href="#" style="margin-top:5px;" class="btn btn-default"><span class="fa fa-download"></span> Download current data to csv</a>
                     </div>
                     <script>
                     $('#date').change(function () {
