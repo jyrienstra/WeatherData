@@ -67,7 +67,7 @@ class Top5visibilityController extends Controller
      * @return array
      */
     private function calculateData($date) {
-        $performace = microtime();
+        $performace = microtime(true);
         $stations = DB::table('balkan_stations')->get()->toArray();
 
 
@@ -137,7 +137,7 @@ class Top5visibilityController extends Controller
         for($bart = 0; $bart < count($visibility); $bart++) {
             $ikbengewooneenarray['station'][] = ucfirst(strtolower($visibility[$bart]->name)) . ', ' . ucfirst(strtolower($visibility[$bart]->country));
             $ikbengewooneenarray['average'][] = round($visibility[$bart]->average_visibility, 2);
-            $ikbengewooneenarray['performace'] = microtime() - $performace;
+            $ikbengewooneenarray['performace'] = microtime(true) - $performace;
         }
 
         return $ikbengewooneenarray;
