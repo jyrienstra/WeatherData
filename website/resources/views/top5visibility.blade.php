@@ -96,9 +96,11 @@ window.onload=  function(){
 		dataType: 'JSON',
 		success: function(res) {
             if(res.length < 1) {
+                $('#downloadCsv').hide();
                 $('.chartAreaWrapper').append('<div class="alert">There is no data for this day</div>');
             }
             else {
+                $('#downloadCsv').show();
                 updateGraph(res)
             }
 		//console.log(res)
