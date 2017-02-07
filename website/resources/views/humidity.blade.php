@@ -81,6 +81,7 @@ function drawGraph(id){
 
 		        $('#error').text('Er is geen data beschikbaar voor dit station dat overeenkomt met het huidige uur');
             }else{
+                $('#error').text('');
                 updateGraph(res)
                 return false;
             }
