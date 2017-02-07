@@ -77,12 +77,11 @@ class Top5visibilityController extends Controller
             DB::table('average_visibility')->where('date', $date)->delete();
 
             foreach($stations as $id => $station) {
-                try {
-                    $file = Storage::disk('weatherdata')->get(date('Y-m-d') . '/' . $station->balkan_station . '.csv');
-                }
-                catch(FileNotFoundException $e) {
+                if(!Storage::disk('weatherdata')->exists(date('Y-m-d') . '/' . $station->balkan_station . '.csv')) {
                     continue;
                 }
+
+                $file = Storage::disk('weatherdata')->get(date('Y-m-d') . '/' . $station->balkan_station . '.csv');
 
                 // Split the .csv by newline.
                 if(self::checkOsIsWindows()){
