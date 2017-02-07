@@ -168,4 +168,34 @@ class HumidityController extends Controller
         }
     }
 
+    /*
+    * Download data to csv
+    * Usage: /top5visibility/{id}/download
+    *
+    * @param $id Stationnumber
+    */
+    public function downloadData($id){
+        //Set headers so it downloads to csv
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename=unwdmi_data.csv');
+
+        //fileopen = output
+        $output = fopen('php://output', 'w');
+
+        //get the data from data() function
+        $data = HumidityController::calculateData($id);
+
+        //write header
+        fputcsv($output, array('stn', 'time', 'humidity'));
+        //write data to csv
+        for($i=0;$i<count($data['time']); $i++){
+            $stn = $id;
+            $time = $data['time'][$i];
+            $humidity = $data['humidity'][$i];
+            //add a line
+            fputcsv($output, array($stn, $time, $humidity));
+        }
+        fclose($output);
+    }
+
 }
