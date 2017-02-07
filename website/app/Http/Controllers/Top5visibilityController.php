@@ -141,7 +141,7 @@ class Top5visibilityController extends Controller
 
 
     /**
-     * Get top 5 from a data
+     * Get top 5 from a date
      *
      * @return array with the top 5 of the given date
      */
@@ -152,7 +152,8 @@ class Top5visibilityController extends Controller
     }
 
     /*
-    * Converts array to csv
+    * Download data to csv
+    * Usage: /top5visibility/{date}/download
     *
     */
     public function downloadData($requestDate){
