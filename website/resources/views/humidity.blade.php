@@ -28,40 +28,40 @@
 <script>
 
 function updateGraph(data) {
-var arrayOfStrings = data.humidity;
-var humidity = arrayOfStrings.map(Number);
-Highcharts.chart('myChart', {
-	
-    title: {
-        text: 'Humidity',
-        x: -20 //center
-    },
-    
-    xAxis: {
-        categories: data.time
-    },
-    yAxis: {
+    var arrayOfStrings = data.humidity;
+    var humidity = arrayOfStrings.map(Number);
+    Highcharts.chart('myChart', {
+
         title: {
-            text: 'Time'
+            text: 'Humidity',
+            x: -20 //center
         },
-        plotLines: [{
-            value: 0,
-            width: 1,
-            color: '#808080'
+
+        xAxis: {
+            categories: data.time
+        },
+        yAxis: {
+            title: {
+                text: 'Time'
+            },
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }]
+        },
+
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle',
+            borderWidth: 0
+        },
+        series: [{
+            name: 'Humidity',
+            data: humidity,
         }]
-    },
-    
-    legend: {
-        layout: 'vertical',
-        align: 'right',
-        verticalAlign: 'middle',
-        borderWidth: 0
-    },
-    series: [{
-        name: 'Humidity',
-        data: humidity,
-    }]
-});
+    });
 }
 function drawGraph(id){
 	$.ajax({
@@ -69,19 +69,18 @@ function drawGraph(id){
 		type: 'GET',
 		dataType: 'JSON',
 		success: function(res) {
-		updateGraph(res)
+		    updateGraph(res)
 		}
 	});
 }
 function stationChange() {
 	var id = document.getElementById("station").value;
-    drawGraph(id);  
-	setInterval(drawGraph(id), 10000);
+    drawGraph(id);
 }
 window.onload=  function(){
 	var elt;
 	$.ajax({
-		 url: 'humidity/stations',
+		 url: '/humidity/stations',
 		 type: 'GET',
 		 dataType: 'JSON',
 		 success: function(res) {	
@@ -93,7 +92,6 @@ window.onload=  function(){
 			$('#station').append(option);
 		}
 	 });
-	 
 };
 </script>
 @endsection
