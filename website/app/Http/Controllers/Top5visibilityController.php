@@ -30,7 +30,7 @@ class Top5visibilityController extends Controller
 
         $data = $this->calculateData($requestDate);
 
-        $dates = DB::table('average_visibility')->select(DB::raw('DISTINCT date'))->get();
+        $dates = DB::table('average_visibility')->select(DB::raw('DISTINCT date'))->orderBy('date', 'asc')->get();
 
         return view('top5visibility', compact('data', 'dates', 'requestDate'));
     }
