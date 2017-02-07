@@ -8,6 +8,7 @@
                 <div class="panel-heading">Top 5 balkan</div>
                 <div class="panel-body">
 					  <select id="station" onchange="stationChange()"></select>
+                      <p id="error"></p>
                     <div class="chartWrapper">
                         <div class="chartAreaWrapper">
                             <div id="myChart" height="500" width="100%"></div>
@@ -28,6 +29,7 @@
 <script>
 
 function updateGraph(data) {
+
     var arrayOfStrings = data.humidity;
     var humidity = arrayOfStrings.map(Number);
     Highcharts.chart('myChart', {
@@ -69,13 +71,18 @@ function drawGraph(id){
 		type: 'GET',
 		dataType: 'JSON',
 		success: function(res) {
-		    updateGraph(res)
+		    if(res == false){
+		        $('#error').text('Er is geen data beschikbaar voor dit station dat overeenkomt met het huidige uur');
+            }else{
+                updateGraph(res)
+            }
 		}
 	});
 }
 function stationChange() {
 	var id = document.getElementById("station").value;
     drawGraph(id);
+    intervalUpdate(id);
 }
 window.onload=  function(){
 	var elt;
@@ -93,5 +100,9 @@ window.onload=  function(){
 		}
 	 });
 };
+
+var intervalUpdate = function(id) {
+    setInterval(drawGraph(id), 10000);
+}
 </script>
 @endsection
