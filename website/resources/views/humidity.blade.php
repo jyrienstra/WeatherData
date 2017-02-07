@@ -7,7 +7,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Top 5 balkan</div>
                 <div class="panel-body">
-					<div id="form"></div>
+					  <select id="station" onchange="stationChange()"></select>
                     <div class="chartWrapper">
                         <div class="chartAreaWrapper">
                             <div id="myChart" height="500" width="100%"></div>
@@ -69,26 +69,31 @@ function drawGraph(id){
 		type: 'GET',
 		dataType: 'JSON',
 		success: function(res) {
-		console.log(res)
 		updateGraph(res)
 		}
-	});
+	});'
 }
 function stationChange() {
 	var id = document.getElementById("station").value;
-    drawGraph(id);     
-	setTimeout(drawGraph(id), 10000)
+    drawGraph(id);  
+	setInterval(drawGraph(id), 10000);
 }
 window.onload=  function(){
+	var elt;
 	$.ajax({
-		url: 'humidity/stations',
-		type: 'GET',
-		dataType: 'JSON',
-		success: function(res) {
-		document.getElementById("log").innerText= res;
+		 url: 'humidity/stations',
+		 type: 'GET',
+		 dataType: 'JSON',
+		 success: function(res) {	
+			var numbers = res;
+			var option = '<option>Select station</option>';
+			for (var i=0;i<numbers.length;i++){
+			   option += '<option value="'+ numbers[i].stn + '">' + numbers[i].name + '</option>';
+			}
+			$('#station').append(option);
 		}
-	});
-	
+	 });
+	 
 };
 </script>
 @endsection

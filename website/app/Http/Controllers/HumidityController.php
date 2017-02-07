@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class HumidityController extends Controller
@@ -22,8 +23,8 @@ class HumidityController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function home() {
-        return view('humidity');
+    public function home() {	
+		return view('humidity');
     }
 
     /**
@@ -41,16 +42,11 @@ class HumidityController extends Controller
      * @return JSON
      */
     public function getStations() {
-		$temp = '<select id="station" onchange="stationChange()">
-					<option selected >Select Station</option>
-  <option value="131300">Station A</option>
-  <option value="131280">Station B</option>
-  <option value="123456">Adopt a Child</option>
-  <option value="15">Retire</option>
-  <option value="15">Military Leave</option>
-  <option value="15">Medical Leave</option>
-</select>';
-        return response()->json($temp);
+		$sql = DB::table('stations')
+                     ->select(DB::raw('name, stn'))
+                     ->where('country', 'like', '%SERBIA%')
+                     ->get();
+		return response()->json($sql);
     }
 
     /*
@@ -97,14 +93,15 @@ class HumidityController extends Controller
         // Split the .csv by newline.
         if (HumidityController::checkOsIsWindows()){
             //os = windows
-            $seperated = explode("\r\n", $file);
+            $seperated = explode("\n", $file);
         } else{
             //os = linux
             $seperated = explode("\n", $file);
         }
-
         // Get the first value, split by comma and create an array with it. This array contains the measurement types
         $labels = explode(',', array_shift($seperated));
+		
+		
 
         // Dynamically fill an array with measurements. [ 'column_name1' => [], 'column_name2' => [] ]
         for ($y = 0; $y < count($labels); $y++) {
@@ -112,6 +109,7 @@ class HumidityController extends Controller
                 $fullData[strtolower($labels[$y])] = [];
             }
         }
+		
 
         // Loop through all rows (except for the first one)
         for ($i = 0; $i < count($seperated); $i++) {
