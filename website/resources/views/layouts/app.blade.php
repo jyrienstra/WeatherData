@@ -14,6 +14,7 @@
 
     <!-- Styles -->
     <link href="{{url('/css/app.css')}}" rel="stylesheet">
+    <link href="{{url('/css/style.css')}}" rel="stylesheet">
     <script src="https://use.fontawesome.com/b56297b782.js"></script>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
 
@@ -99,6 +100,5 @@
 
     <!-- Scripts -->
     <script src="{{url('/js/app.js')}}"></script>
-    <link href="{{url('/css/style.css')}}" rel="stylesheet">
 </body>
 </html>
