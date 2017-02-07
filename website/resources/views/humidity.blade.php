@@ -27,12 +27,11 @@
 </script>
 <script src="{{url('/js/chart.js')}}"></script>
 <script>
-
+    var chart;
 function updateGraph(data) {
-
     var arrayOfStrings = data.humidity;
     var humidity = arrayOfStrings.map(Number);
-    Highcharts.chart('myChart', {
+    chart = Highcharts.chart('myChart', {
 
         title: {
             text: 'Humidity',
@@ -72,6 +71,7 @@ function drawGraph(id){
 		dataType: 'JSON',
 		success: function(res) {
 		    if(res == false){
+		        chart.destroy();
 		        $('#error').text('Er is geen data beschikbaar voor dit station dat overeenkomt met het huidige uur');
             }else{
                 updateGraph(res)
