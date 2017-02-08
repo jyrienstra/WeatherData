@@ -29,7 +29,7 @@
     <div id="app">
         <div id="header">
 			<div class="container">
-				<img src="{{url('/images/logo.jpg')}}" />
+				<a href="{{url('home')}}"><img src="{{url('/images/logo.jpg')}}" /></a>
                 <div id="logo" class="hidden-md hidden-sm"></div>
 			</div>
         </div>
