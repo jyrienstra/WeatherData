@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 use Illuminate\Filesystem\FileNotFoundException;
 
 use DB;
@@ -31,7 +32,7 @@ class Top5visibilityController extends Controller
 
         $data = $this->calculateData($requestDate);
 
-        $dates = DB::table('average_visibility')->select(DB::raw('DISTINCT date'))->orderBy('date', 'asc')->get();
+        $dates = array_map('basename', File::directories(storage_path() . '/data'));
 
         return view('top5visibility', compact('data', 'dates', 'requestDate'));
     }
@@ -71,17 +72,16 @@ class Top5visibilityController extends Controller
         $performace = microtime(true);
         $stations = DB::table('balkan_stations')->get()->toArray();
 
-
-        if($date == date('Y-m-d')) {
+        if($date == date('Y-m-d') || DB::table('average_visibility')->where('date', $date)->count() == 0) {
 
             DB::table('average_visibility')->where('date', $date)->delete();
 
             foreach($stations as $id => $station) {
-                if(!Storage::disk('weatherdata')->exists(date('Y-m-d') . '/' . $station->balkan_station . '.csv')) {
+                if(!Storage::disk('weatherdata')->exists($date . '/' . $station->balkan_station . '.csv')) {
                     continue;
                 }
 
-                $file = Storage::disk('weatherdata')->get(date('Y-m-d') . '/' . $station->balkan_station . '.csv');
+                $file = Storage::disk('weatherdata')->get($date . '/' . $station->balkan_station . '.csv');
 
                 // Split the .csv by newline.
                 if(self::checkOsIsWindows()){
@@ -112,15 +112,14 @@ class Top5visibilityController extends Controller
 
                     // Split the row on commas
                     $data = explode(',', $seperated[$i]);
-
-                    $totalVisibility += $data[4];
+                    $totalVisibility += (float)$data[4];
                     $index++;
                 }
                 if($index) {
                     DB::table('average_visibility')->insert([
                         'station_id' => $station->balkan_station,
                         'average_visibility' => $totalVisibility / $index,
-                        'date' => date('Y-m-d')
+                        'date' => $date
                     ]);
                 }
             }
