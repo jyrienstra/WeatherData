@@ -163,7 +163,7 @@ class Top5visibilityController extends Controller
     public function downloadData($requestDate){
         //Set headers so it downloads to csv
         header('Content-Type: text/csv; charset=utf-8');
-        header('Content-Disposition: attachment; filename=unwdmi_data.csv');
+        header('Content-Disposition: attachment; filename=unwdmi_data_top5balkan_' . $requestDate . '.csv');
 
         //fileopen = output
         $output = fopen('php://output', 'w');
