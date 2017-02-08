@@ -56,7 +56,7 @@ return [
 
         'weatherdata' => [
             'driver' => 'local',
-            'root' => storage_path('weatherdata'),
+            'root' => storage_path('data'),
             'visibility' => 'public',
         ],
 

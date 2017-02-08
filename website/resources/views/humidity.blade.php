@@ -29,6 +29,8 @@
 <script src="{{url('/js/chart.js')}}"></script>
 <script>
 var chart;
+var currentStation;
+var interval;
 function updateGraph(data) {
     if(chart != undefined) {
         //redraw the graph
@@ -66,7 +68,15 @@ function updateGraph(data) {
         series: [{
             name: 'Humidity',
             data: humidity,
-        }]
+        }],
+        plotOptions: {
+            series: {
+                animation: false
+            }
+        },
+        scrollbar: {
+            enabled: true
+        }
     });
 }
 function drawGraph(id){
@@ -83,15 +93,16 @@ function drawGraph(id){
             }else{
                 $('#error').text('');
                 updateGraph(res)
-                return false;
+                //return false;
             }
 		}
 	});
 }
 function stationChange() {
-	var id = document.getElementById("station").value;
+	var id = $('#station').val();
+    intervalUpdate('unset');
     drawGraph(id);
-    intervalUpdate(id);
+    intervalUpdate('set', id);
     $('#downloadCsv').attr("href", '<?php $_SERVER['HTTP_HOST']; ?>' + '/humidity/' + id + '/download');
 
 }
@@ -112,10 +123,19 @@ window.onload=  function(){
 	 });
 };
 
-var intervalUpdate = function(id) {
-    setInterval(function () {
-        drawGraph(id);
-    }, 10000);
+var intervalUpdate = function(state, id) {
+    currentStation = id || 0;
+
+    switch(state) {
+        case 'set':
+            interval = setInterval(function () {
+                drawGraph(currentStation);
+            }, 10000);
+            break;
+        case 'unset':
+            clearInterval(interval);
+            break;
+    }
 }
 </script>
 @endsection

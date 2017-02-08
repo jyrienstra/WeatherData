@@ -13,13 +13,13 @@
                         <label for="date">Select date</label>
 
                         <select id="date" name="date" class="form-control" />
-                        @foreach ($dates as $key => $value)
-                            @if($requestDate == null && $value->date == date('Y-m-d'))
-                                <option selected>{{date('d-m-Y', strtotime($value->date))}}</option>
-                            @elseif ($requestDate == $value->date)
-                                <option selected>{{date('d-m-Y', strtotime($value->date))}}</option>
+                        @foreach ($dates as $date)
+                            @if($requestDate == null && $date == date('Y-m-d'))
+                                <option selected>{{date('d-m-Y', strtotime($date))}}</option>
+                            @elseif ($requestDate == $date)
+                                <option selected>{{date('d-m-Y', strtotime($date))}}</option>
                             @else
-                                <option>{{date('d-m-Y', strtotime($value->date))}}</option>
+                                <option>{{date('d-m-Y', strtotime($date))}}</option>
                             @endif
                         @endforeach
                         </select>
@@ -85,7 +85,7 @@ function updateGraph(data) {
         series: [{
             name: 'Average Visibility',
             data: data.average
-        }]
+        }],
     });
 }
 

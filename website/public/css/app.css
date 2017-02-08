@@ -6,20 +6,24 @@
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;}
 
 #header{
-   	background-color:#fff;
+   	background:#fff;
 	padding-top:20px;
     padding-bottom:20px;
 }
-#logo{
-	background: url(../images/header.png) no-repeat right bottom;
-    overflow:hidden;
 
+#header .container {
+    position: relative;
 }
-@media screen and (max-width: 768px){
-    #header{
-        background: none;
-    }
+#logo{
+	background: url(../images/header.png) no-repeat;
+    position: absolute;
+    height: 115px;
+    width: 400px;
+    top: 0;
+    right: 0;
 }
+
+
 #background-container{
     background-color: #f3f3f1;
     padding-top:20px

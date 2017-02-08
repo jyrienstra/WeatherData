@@ -75,7 +75,7 @@ class HumidityController extends Controller
         $filteredData = [];
 
         // Current hour (12, or 22 for example)
-        $currentHour = \Carbon\Carbon::now()->hour;
+        $currentHour = \Carbon\Carbon::now()->hour - 1;
 
         $windows = true;
         if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
