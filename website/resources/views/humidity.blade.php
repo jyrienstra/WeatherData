@@ -97,6 +97,7 @@ function drawGraph(id){
                     series: [{
                         name: 'Time',
                         data: humidity,
+                        type: 'spline'
                     }],
                     plotOptions: {
                         series: {
