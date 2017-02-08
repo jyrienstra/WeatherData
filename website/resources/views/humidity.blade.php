@@ -26,59 +26,32 @@
 <script>
 
 </script>
-<script src="{{url('/js/chart.js')}}"></script>
+<script src="http://code.highcharts.com/stock/highstock.js"></script>
 <script>
-var chart;
-var currentStation;
-var interval;
-function updateGraph(data) {
-    if(chart != undefined) {
-        //redraw the graph
-        chart.destroy();
-    }
-    var arrayOfStrings = data.humidity;
-    var humidity = arrayOfStrings.map(Number);
-    chart = Highcharts.chart('myChart', {
 
-        title: {
-            text: 'Humidity',
-            x: -20 //center
-        },
+var chart,
+    currentStation,
+    interval;
 
-        xAxis: {
-            categories: data.time
-        },
-        yAxis: {
-            title: {
-                text: 'Time'
-            },
-            plotLines: [{
-                value: 0,
-                width: 1,
-                color: '#808080'
-            }]
-        },
+function updateGraph(id) {
+    $.ajax({
+        url: 'humidity/live/data/' + id,
+        type: 'GET',
+        dataType: 'JSON',
+        success: function(res) {
+            let xPoint = res.time[res.time.length - 1],
+                yPoint = res.humidity[res.humidity.length - 1];
 
-        legend: {
-            layout: 'vertical',
-            align: 'right',
-            verticalAlign: 'middle',
-            borderWidth: 0
-        },
-        series: [{
-            name: 'Humidity',
-            data: humidity,
-        }],
-        plotOptions: {
-            series: {
-                animation: false
-            }
-        },
-        scrollbar: {
-            enabled: true
+            chart.xAxis[0].categories.push(xPoint);
+
+            chart.series[0].addPoint({
+            y: Number(yPoint)
+        }, true, true, true);
+            chart.redraw();
         }
     });
 }
+
 function drawGraph(id){
 	$.ajax({
 		url: 'humidity/live/data/' + id,
@@ -92,7 +65,57 @@ function drawGraph(id){
 		        $('#error').text('Er is geen data beschikbaar voor dit station dat overeenkomt met het huidige uur');
             }else{
                 $('#error').text('');
-                updateGraph(res)
+                var arrayOfStrings = res.humidity;
+                var humidity = arrayOfStrings.map(Number);
+                chart = Highcharts.chart('myChart', {
+
+                    title: {
+                        text: 'Humidity',
+                        x: -20 //center
+                    },
+
+                    xAxis: {
+                        categories: res.time
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'Humidity'
+                        },
+                        plotLines: [{
+                            value: 0,
+                            width: 1,
+                            color: '#808080'
+                        }]
+                    },
+
+                    legend: {
+                        layout: 'vertical',
+                        align: 'right',
+                        verticalAlign: 'middle',
+                        borderWidth: 0
+                    },
+                    series: [{
+                        name: 'Time',
+                        data: humidity,
+                    }],
+                    plotOptions: {
+                        series: {
+                            animation: false
+                        }
+                    },
+                    scrollbar: {
+	    	            enabled: true
+	                 },
+                     navigator:{
+                         enabled:true
+                     },
+	                rangeSelector: {
+                        enabled:false
+	                },
+                    chart: {
+                        zoomType: 'x'
+                    },
+                });
                 //return false;
             }
 		}
@@ -129,7 +152,7 @@ var intervalUpdate = function(state, id) {
     switch(state) {
         case 'set':
             interval = setInterval(function () {
-                drawGraph(currentStation);
+                updateGraph(currentStation);
             }, 10000);
             break;
         case 'unset':

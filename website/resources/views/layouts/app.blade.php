@@ -27,9 +27,10 @@
 </head>
 <body>
     <div id="app">
-        <div id = "header">
-			<div class="container" id="logo">
-				<div id="logo"><img src="{{url('/images/logo.jpg')}}"/></div>
+        <div id="header">
+			<div class="container">
+				<img src="{{url('/images/logo.jpg')}}" />
+                <div id="logo" class="hidden-md hidden-sm"></div>
 			</div>
         </div>
         <nav class="navbar navbar-default navbar-static-top">

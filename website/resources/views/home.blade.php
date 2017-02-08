@@ -9,12 +9,13 @@
 
                 <div class="panel-body">
                     <div class="row">
-                        <div class="col-md-4 col-md-offset-3">
+                        <div class="col-md-4 col-md-offset-2">
                             With the humidity graph you can check the humidity of all Serbian weather stations. Every 10 seconds the graph is updated to provide the latest data
-                            <a href="#" class="btn btn-default">Go to Humidity graph</a>
+                            <a href="{{url('humidity')}}" class="btn btn-default form-control" style="margin-top: 20px;"><i class="fa fa-soundcloud"></i> Go to Humidity graph</a>
                         </div>
                         <div class="col-md-4">
-                            <a href="#" class="btn btn-default">Go to Top 5 graph</a>
+                            With this graph, the top 5 of visibility of the stations in the Balkan is provided. Every day is saved until a month back.
+                            <a href="{{url('top5visibility')}}" class="btn btn-default form-control" style="margin-top: 20px;"><i class="fa fa-eye"></i> Go to Top 5 graph</a>
                         </div>
                     </div>
                 </div>

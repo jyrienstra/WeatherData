@@ -162,8 +162,8 @@ class Top5visibilityController extends Controller
     */
     public function downloadData($requestDate){
         //Set headers so it downloads to csv
-        //header('Content-Type: text/csv; charset=utf-8');
-        //header('Content-Disposition: attachment; filename=unwdmi_data.csv');
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename=unwdmi_data.csv');
 
         //fileopen = output
         $output = fopen('php://output', 'w');
@@ -171,7 +171,6 @@ class Top5visibilityController extends Controller
         //get the data from data() function
         $data = Top5visibilityController::getTop5($requestDate);
 
-        dd($data);
         //write header
         fputcsv($output, array('date', 'station', 'avarage'));
         //write data to csv
