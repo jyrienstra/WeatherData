@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
+use Carbon\Carbon;
+
 class HumidityController extends Controller
 {
 
@@ -71,11 +73,87 @@ class HumidityController extends Controller
      */
     private function calculateData($id) {
 
+            //$test = [];
+            //$currentMinute = \Carbon\Carbon::now()->minute;
+            //$test["hour"] = $currentHour;
+            //$test["minute"] = $currentMinute;
+
+            $fullData = $this->parseCSV(date('Y-m-d'), $id);
+            $filteredData = [];
+
+            //dd($test);
+            //dd( count($fullData["time"]) - 3600 . ' and ' . count($fullData["time"]) );
+
+            $i = count($fullData["time"]) - 3601;
+
+            if($i > 0) {
+                for (; $i < count($fullData["time"]); $i += 10) {
+                    $filteredData["time"][] = $fullData["time"][$i];
+                    $filteredData["humidity"][] = $fullData["humidity"][$i];
+                }
+            }
+            else {
+                $yesterday = $this->parseCSV(date('Y-m-d', strtotime('yesterday')), $id);
+
+                $i = $i * -1;
+
+                for($bla = count($yesterday) - 1; $bla > $i; $bla--) {
+                    $filteredData["time"][] = $yesterday[$bla];
+                    $filteredData["humidity"][] = $yesterday[$bla];
+                }
+            }
+
+            // Loop over the time array
+            // foreach ($fullData["time"] as $key => $value) {
+            //
+            //     // Explode the timestamp (h:m:s)
+            //     $currentHourCSV = explode(':', $value);
+            //
+            //     // if (($currentHourCSV[0] == $test["hour"] || $currentHourCSV[0] == ($test["hour"] - 1)) && $currentHourCSV[1] >= $test["minute"]) {
+            //     //     // Add all the data to the $filteredData array
+            //     //     //$filteredData["date"][] = $fullData["date"][$key];
+            //     //     //$filteredData["time"][] = date('h:m:s', strtotime($fullData["time"][$key]) + 60 * 60);
+            //     //     $filteredData["time"][] = $fullData["time"][$key];
+            //     //     //$filteredData["temperature"][] = $fullData["temperature"][$key];
+            //     //     //$filteredData["dewpoint"][] = $fullData["dewpoint"][$key];
+            //     //     //$filteredData["visibility"][] = $fullData["visibility"][$key];
+            //     //     $filteredData["humidity"][] = $fullData["visibility"][$key];
+            //     // }
+            //
+            //
+            //     // If the current timestamp is the same as the timestamp in the csv file
+            //     if ($currentHourCSV[0] == $currentHour && $currentHourCSV[2] % 10 == 0) {
+            //     // if(Carbon::now()->diffInHours(Carbon::parse($value)->addHour(1)) <= 1 && $currentHourCSV[2] % 10 == 0) {
+            //     //     Add all the data to the $filteredData array
+            //     //     $filteredData["date"][] = $fullData["date"][$key];
+            //     //     $filteredData["time"][] = date('h:m:s', strtotime($fullData["time"][$key]) + 60 * 60);
+            //         $filteredData["time"][] = $fullData["time"][$key];
+            //     //     $filteredData["temperature"][] = $fullData["temperature"][$key];
+            //     //     $filteredData["dewpoint"][] = $fullData["dewpoint"][$key];
+            //     //     $filteredData["visibility"][] = $fullData["visibility"][$key];
+            //         $filteredData["humidity"][] = $fullData["visibility"][$key];
+            //     }
+            //
+            // }
+
+            //Als de array empty is
+            if(count($filteredData) ==  0){
+                //Geen data match met het huidige uur dus een lege array
+                //Report error
+                return false;
+            }else{
+                //Als de array wel is gevuld
+                //Return array
+                return $filteredData;
+            }
+    }
+
+    private function parseCSV($date, $id) {
         // The filtered data
         $filteredData = [];
 
         // Current hour (12, or 22 for example)
-        $currentHour = \Carbon\Carbon::now()->hour - 1;
+        $currentHour = Carbon::now()->hour;
 
         $windows = true;
         if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
@@ -88,9 +166,9 @@ class HumidityController extends Controller
 
 
         // Search for the file given by the GET parameter
-        if(Storage::disk('weatherdata')->exists(date('Y-m-d') . '/'.$id.'.csv')) {
+        if(Storage::disk('weatherdata')->exists($date . '/'.$id.'.csv')) {
 
-            $file = Storage::disk('weatherdata')->get(date('Y-m-d') . '/'.$id.'.csv');
+            $file = Storage::disk('weatherdata')->get($date . '/'.$id.'.csv');
 
             // Split the .csv by newline.
             if (HumidityController::checkOsIsWindows()){
@@ -100,6 +178,7 @@ class HumidityController extends Controller
                 //os = linux
                 $seperated = explode("\n", $file);
             }
+
             // Get the first value, split by comma and create an array with it. This array contains the measurement types
             $labels = explode(',', array_shift($seperated));
 
@@ -111,7 +190,6 @@ class HumidityController extends Controller
                     $fullData[strtolower($labels[$y])] = [];
                 }
             }
-
 
             // Loop through all rows (except for the first one)
             for ($i = 0; $i < count($seperated); $i++) {
@@ -133,39 +211,9 @@ class HumidityController extends Controller
                 }
 
             }
-
-
-            // Loop over the time array
-            foreach ($fullData["time"] as $key => $value) {
-
-                // Explode the timestamp (h:m:s)
-                $currentHourCSV = explode(':', $value);
-
-
-                // If the current timestamp is the same as the timestamp in the csv file
-                if ($currentHourCSV[0] == $currentHour && $currentHourCSV[2] % 10 == 0) {
-                    // Add all the data to the $filteredData array
-                    //$filteredData["date"][] = $fullData["date"][$key];
-                    $filteredData["time"][] = $fullData["time"][$key];
-                    //$filteredData["temperature"][] = $fullData["temperature"][$key];
-                    //$filteredData["dewpoint"][] = $fullData["dewpoint"][$key];
-                    //$filteredData["visibility"][] = $fullData["visibility"][$key];
-                    $filteredData["humidity"][] = $fullData["visibility"][$key];
-                }
-
-            }
         }
 
-        //Als de array empty is
-        if(count($filteredData) ==  0){
-            //Geen data match met het huidige uur dus een lege array
-            //Report error
-            return false;
-        }else{
-            //Als de array wel is gevuld
-            //Return array
-            return $filteredData;
-        }
+        return $fullData;
     }
 
     /*

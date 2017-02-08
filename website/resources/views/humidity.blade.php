@@ -26,7 +26,7 @@
 <script>
 
 </script>
-<script src="http://code.highcharts.com/stock/highstock.js"></script>
+<script src="https://code.highcharts.com/stock/highstock.js"></script>
 <script>
 
 var chart,
@@ -47,7 +47,6 @@ function updateGraph(id) {
             chart.series[0].addPoint({
             y: Number(yPoint)
         }, true, true, true);
-            chart.redraw();
         }
     });
 }
@@ -95,7 +94,7 @@ function drawGraph(id){
                         borderWidth: 0
                     },
                     series: [{
-                        name: 'Time',
+                        name: 'Humidity',
                         data: humidity,
                         type: 'spline'
                     }],

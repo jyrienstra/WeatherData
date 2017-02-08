@@ -46,13 +46,14 @@
                     </button>
 
                     <!-- Branding Image -->
-                    <a class="navbar-brand" href="{{ url('/') }}">
-                        {{ config('app.name', 'Laravel') }}
-                    </a>
+
                 </div>
 
                 <div class="collapse navbar-collapse" id="app-navbar-collapse">
                         <!-- Authentication Links -->
+                    <ul class="nav navbar-nav">
+                        <li><a href="{{url('home')}}">Home</a></li>
+                    </ul>
                     @if (!Auth::guest())
                     <ul class="nav navbar-nav">
                         <li><a href="{{ url('/humidity') }}">Humidity</a></li>
