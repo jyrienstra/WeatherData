@@ -17,10 +17,6 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/register', function () {
-    return redirect()->route('login');
-});
-
 Route::get('/home', 'HomeController@home');
 
 Route::get('/top5visibility/{requestDate?}', 'Top5visibilityController@home');
