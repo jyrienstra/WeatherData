@@ -4,8 +4,8 @@ The TSWS receives localized weather data from weather stations from all over the
 Both servers are lacking resource overhead with the use of these applications. The resource allocation provided quite a few difficult design choices. But the provided TSWS still provided the data as requested by the client.
 
 The University also asked for the calculation of two specific datasets:
-A calculation of the humidity values for all the weather stations within Serbia. The data should be available at intervals of 10 seconds per station. The data should be represented in a graph for the past 60 minutes. It would be valuable if it is possible to zoom in within the graph, so that even subtle changes are easy to recognize. The primary goal for these values is to help academics in the research for fungi and other trails involving humidity dependent variables.
-A representation of the 5 weather stations, within the Balkan area, that have the highest visibility distance. The visibility ranking should be calculated per day, from midnight onwards. A permanent history of these values should be available at all times. If the data for the current day is requested, the values should be calculated at once for all the measurements until that point of the day.
+  - A calculation of the humidity values for all the weather stations within Serbia. The data should be available at intervals of 10 seconds per station. The data should be represented in a graph for the past 60 minutes. It would be valuable if it is possible to zoom in within the graph, so that even subtle changes are easy to recognize. The primary goal for these values is to help academics in the research for fungi and other trails involving humidity dependent variables.
+  - A representation of the 5 weather stations, within the Balkan area, that have the highest visibility distance. The visibility ranking should be calculated per day, from midnight onwards. A permanent history of these values should be available at all times. If the data for the current day is requested, the values should be calculated at once for all the measurements until that point of the day.
 
 #Installation:
 Website:  
