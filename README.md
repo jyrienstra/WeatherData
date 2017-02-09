@@ -27,3 +27,7 @@ In the website folder
   - Download composer and set it in your enviroment variables.  
   - composer install  
   - composer update
+  
+Server(raspberry pi)
+  - Run weather generator provided by the university (UNWDMI GENERATOR)
+  - Run receiver /raspberry_pi/ contains files forreceiving and parsing the xml data from the socket
