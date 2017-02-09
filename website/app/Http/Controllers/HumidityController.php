@@ -84,24 +84,34 @@ class HumidityController extends Controller
             //dd($test);
             //dd( count($fullData["time"]) - 3600 . ' and ' . count($fullData["time"]) );
 
-            $i = count($fullData["time"]) - 3601;
+            if(count($fullData["time"]) - 3601 < 0) {
 
-            if($i > 0) {
+                $i = abs(count($fullData["time"]) - 3601);
+
+                $yesterday = $this->parseCSV(date('Y-m-d', strtotime('-1 day')), $id);
+                $count = count($yesterday["time"]) - 1;
+
+                for($x = 0; $x < $i; $x++) {
+                    if($count <= 0) break;
+                    $filteredData["time"][] = $yesterday["time"][$count];
+                    $filteredData["humidity"][] = $yesterday["humidity"][$count];
+
+                    $count = $count - 10;
+                }
+
+                for ($a = 0; $a < count($fullData["time"]); $a += 10) {
+                    $filteredData["time"][] = $fullData["time"][$a];
+                    $filteredData["humidity"][] = $fullData["humidity"][$a];
+                }
+
+            }
+            else {
                 for (; $i < count($fullData["time"]); $i += 10) {
                     $filteredData["time"][] = $fullData["time"][$i];
                     $filteredData["humidity"][] = $fullData["humidity"][$i];
                 }
             }
-            else {
-                $yesterday = $this->parseCSV(date('Y-m-d', strtotime('yesterday')), $id);
 
-                $i = $i * -1;
-
-                for($bla = count($yesterday) - 1; $bla > $i; $bla--) {
-                    $filteredData["time"][] = $yesterday[$bla];
-                    $filteredData["humidity"][] = $yesterday[$bla];
-                }
-            }
 
             // Loop over the time array
             // foreach ($fullData["time"] as $key => $value) {
