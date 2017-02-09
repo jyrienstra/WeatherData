@@ -9,21 +9,21 @@ A representation of the 5 weather stations, within the Balkan area, that have th
 
 #Installation:
 Website:  
--Make sure your system meets all the requirements of laravel https://laravel.com/docs/5.4/installation  
--Pull the master brange using git  
--Create a database  
--Import database/thema2.2.sql in the database  
-	Optional:  
-	-You can also run php artisan migrate (but some migrations are missing)  
-	-After this seed the database with data: php artisan db:seed  
--Change the .env.example to .env and change the settings  
--Generate a key using: php artisan key:generate  
--Run the website using: php artisan serve  
--Register an test account at /register  
--Login and view the website  
+  - Make sure your system meets all the requirements of laravel https://laravel.com/docs/5.4/installation  
+  - Pull the master brange using git  
+  - Create a database  
+  - Import database/thema2.2.sql in the database  
+  - Optional:  
+    - You can also run php artisan migrate (but some migrations are missing)  
+    - After this seed the database with data: php artisan db:seed  
+  - Change the .env.example to .env and change the settings  
+  - Generate a key using: php artisan key:generate  
+  - Run the website using: php artisan serve  
+  - Register an test account at /register  
+  - Login and view the website  
 
 Development:
 In the website folder  
--Download composer and set it in your enviroment variables.  
--composer install  
--composer update
+  - Download composer and set it in your enviroment variables.  
+  - composer install  
+  - composer update
