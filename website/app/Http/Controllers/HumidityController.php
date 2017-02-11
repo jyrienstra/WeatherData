@@ -35,6 +35,23 @@ class HumidityController extends Controller
         return response()->json($this->calculateData($id));
     }
 
+	/**
+     * Show the data at /humidity/stations
+     *
+     * @return JSON
+     */
+    public function getStations() {
+		$temp = '<select id="station" onchange="stationChange()">
+					<option selected >Select Station</option>
+  <option value="131300">Station A</option>
+  <option value="131280">Station B</option>
+  <option value="123456">Adopt a Child</option>
+  <option value="15">Retire</option>
+  <option value="15">Military Leave</option>
+  <option value="15">Medical Leave</option>
+</select>';
+        return response()->json($temp);
+    }
 
     /*
      * Check if OS = windows

@@ -5,13 +5,12 @@
     <div class="row">
         <div class="col-md-12 col-md-offset-0">
             <div class="panel panel-default">
-                <div class="panel-heading">Humidity</div>
-
+                <div class="panel-heading">Top 5 balkan</div>
                 <div class="panel-body">
+					<div id="form"></div>
                     <div class="chartWrapper">
-					<div id="result" style="color:red"></div>
                         <div class="chartAreaWrapper">
-                            <canvas id="myChart" height="500" width="10000"></canvas>
+                            <div id="myChart" height="500" width="100%"></div>
                         </div>
                         <canvas id="myChartAxis" height="500" width="0"></canvas>
                     </div>
@@ -20,57 +19,76 @@
         </div>
     </div>
 </div>
+
+
+<script>
+
+</script>
 <script src="{{url('/js/chart.js')}}"></script>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
 <script>
 
 function updateGraph(data) {
-	var ctx = document.getElementById("myChart").getContext("2d");
-    var data = {
-        labels: data.time,
-        datasets: [{
-            label: 'Temperatuur per dag',
-            data: data.humidity,
-            fillColor: "rgba(220,220,220,0.2)",
-            strokeColor: "rgba(220,220,220,1)",
-            pointColor: "rgba(220,220,220,1)",
-            pointStrokeColor: "#fff",
-            pointHighlightFill: "#fff",
-            pointHighlightStroke: "rgba(220,220,220,1)",
-        }],
-        options: {
-        }
-    };
-    new Chart(ctx).Line(data, {
-        onAnimationComplete: function () {
-            var sourceCanvas = this.chart.ctx.canvas;
-
-                var copyWidth = this.scale.xScalePaddingLeft - 5;
-                // the +5 is so that the bottommost y axis label is not clipped off
-                // we could factor this in using measureText if we wanted to be generic
-                var copyHeight = this.scale.endPoint + 5;
-                var targetCtx = document.getElementById("myChartAxis").getContext("2d");
-                targetCtx.canvas.width = copyWidth;
-                targetCtx.drawImage(sourceCanvas, 0, 0, copyWidth, copyHeight, 0, 0, copyWidth, copyHeight);
-        }
-    });
+var arrayOfStrings = data.humidity;
+var humidity = arrayOfStrings.map(Number);
+Highcharts.chart('myChart', {
+	
+    title: {
+        text: 'Humidity',
+        x: -20 //center
+    },
+    
+    xAxis: {
+        categories: data.time
+    },
+    yAxis: {
+        title: {
+            text: 'Time'
+        },
+        plotLines: [{
+            value: 0,
+            width: 1,
+            color: '#808080'
+        }]
+    },
+    
+    legend: {
+        layout: 'vertical',
+        align: 'right',
+        verticalAlign: 'middle',
+        borderWidth: 0
+    },
+    series: [{
+        name: 'Humidity',
+        data: humidity,
+    }]
+});
 }
-function getData(){
-
+function drawGraph(id){
 	$.ajax({
-		url: 'humidity/live/data',
+		url: 'humidity/live/data/' + id,
 		type: 'GET',
 		dataType: 'JSON',
 		success: function(res) {
+		console.log(res)
 		updateGraph(res)
 		}
 	});
 }
-
+function stationChange() {
+	var id = document.getElementById("station").value;
+    drawGraph(id);     
+	setTimeout(drawGraph(id), 10000)
+}
 window.onload=  function(){
-	getData();
-	myVar = setInterval(getData, 10000);
+	$.ajax({
+		url: 'humidity/stations',
+		type: 'GET',
+		dataType: 'JSON',
+		success: function(res) {
+		document.getElementById("log").innerText= res;
+		}
+	});
+	
 };
-
 </script>
 @endsection
