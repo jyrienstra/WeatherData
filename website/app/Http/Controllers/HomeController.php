@@ -28,7 +28,7 @@ class HomeController extends Controller
     public function data()
     {
 
-        $file = Storage::disk('weatherdata')->get(date('Y-m-d') . '/130670.csv');
+        /*$file = Storage::disk('weatherdata')->get(date('Y-m-d') . '/130670.csv');
 
         // Split the .csv by newline.
         if(HomeController::checkOsIsWindows()){
@@ -63,7 +63,7 @@ class HomeController extends Controller
             }
 
         }
-        return $fullData;
+        return $fullData;*/
     }
 
     /*
@@ -72,8 +72,8 @@ class HomeController extends Controller
      * @return view
      */
     public function top5visibility(){
-        $stations = DB::table('balkan_stations')->get()->toArray();
-        
+        /*$stations = DB::table('balkan_stations')->get()->toArray();
+
         for($i = 0; $i < count($stations); $i++) {
             try {
                 $file = Storage::disk('weatherdata')->get(date('Y-m-d', time()) . '/' . $stations[$i] . '.csv');
@@ -124,15 +124,15 @@ class HomeController extends Controller
                             ->limit(5)
                             ->get()
                             ->toJson();
-        return $visibility;
+        return $visibility;*/
     }
 
     /*
      * Show the view
      */
     public function home(){
-       $fullData = HomeController::data();
-       return view('home', compact('fullData', 'timeexpired'));
+    //    $fullData = HomeController::data();
+       return view('home');
     }
 
     /*
