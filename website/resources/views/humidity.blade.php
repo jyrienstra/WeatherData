@@ -71,7 +71,7 @@ function drawGraph(id){
 		success: function(res) {
 		updateGraph(res)
 		}
-	});'
+	});
 }
 function stationChange() {
 	var id = document.getElementById("station").value;
