@@ -4,3 +4,9 @@
     background-color: #fff;
     border-color: #ccc;
 }
+.btn-default:hover{
+    background-color: #023065 !important;
+}
+.btn-default:active{
+    background-color: #fff;
+}

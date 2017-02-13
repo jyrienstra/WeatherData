@@ -143,4 +143,46 @@ class Top5visibilityController extends Controller
         return $ikbengewooneenarray;
     }
 
+
+
+    /**
+     * Get top 5 from a date
+     *
+     * @return array with the top 5 of the given date
+     */
+    public function getTop5($requestDate = null) {
+        $dates = DB::table('average_visibility')->select(DB::raw('DISTINCT date'))->get();
+        $data = $this->calculateData($requestDate !== null ? $requestDate : date('Y-m-d'));
+        return $data;
+    }
+
+    /*
+    * Download data to csv
+    * Usage: /top5visibility/{date}/download
+    *
+    */
+    public function downloadData($requestDate){
+        //Set headers so it downloads to csv
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename=unwdmi_data.csv');
+
+        //fileopen = output
+        $output = fopen('php://output', 'w');
+
+        //get the data from data() function
+        $data = Top5visibilityController::getTop5($requestDate);
+
+
+        //write header
+        fputcsv($output, array('date', 'station', 'avarage'));
+        //write data to csv
+        for($i=0;$i<count($data['station']); $i++){
+            $date = $requestDate;
+            $station = $data['station'][$i];
+            $avarage = $data['average'][$i];
+            //add a line
+            fputcsv($output, array($date, $station, $avarage));
+        }
+        fclose($output);
+    }
 }
