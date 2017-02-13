@@ -9,6 +9,7 @@
 
                 <div class="panel-body">
                     <div class="form-group">
+                        <h3>You are currently viewing the date of {{date('d-m-Y', strtotime($requestDate))}}</h3>
                         <label for="date">Select date</label>
 
                         <select id="date" name="date" class="form-control" />
@@ -22,11 +23,7 @@
                             @endif
                         @endforeach
                         </select>
-                        <a href="" id="downloadCsv" style="margin-top:5px;" class="btn btn-default"><span class="fa fa-download"></span> Download current data to csv</a>
-                            <script>
-                                $('#downloadCsv').attr("href", '<?php $_SERVER['HTTP_HOST']; ?>' + '/top5visibility/' + $('#date').val() + '/download');
-                            </script>
-                        </div>
+                    </div>
                     <script>
                     $('#date').change(function () {
                         location.href = '<?php $_SERVER['HTTP_HOST']; ?>' + '/top5visibility/' + $('#date').val();
@@ -37,6 +34,11 @@
                             <div id="myChart" height="500" width="100%"></div>
                         </div>
                     </div>
+                    <hr />
+                    <a href="" id="downloadCsv" style="margin-top:5px;" class="btn btn-default pull-right"><span class="fa fa-download"></span> Download current data to csv</a>
+                        <script>
+                            $('#downloadCsv').attr("href", '<?php $_SERVER['HTTP_HOST']; ?>' + '/top5visibility/' + $('#date').val() + '/download');
+                        </script>
                 </div>
             </div>
         </div>
