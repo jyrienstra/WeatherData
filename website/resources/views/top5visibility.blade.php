@@ -15,11 +15,11 @@
                         <select id="date" name="date" class="form-control" />
                         @foreach ($dates as $key => $value)
                             @if($requestDate == null && $value->date == date('Y-m-d'))
-                                <option selected>{{$value->date}}</option>
+                                <option selected>{{date('d-m-Y', strtotime($value->date))}}</option>
                             @elseif ($requestDate == $value->date)
-                                <option selected>{{$value->date}}</option>
+                                <option selected>{{date('d-m-Y', strtotime($value->date))}}</option>
                             @else
-                                <option>{{$value->date}}</option>
+                                <option>{{date('d-m-Y', strtotime($value->date))}}</option>
                             @endif
                         @endforeach
                         </select>
@@ -91,7 +91,7 @@ function updateGraph(data) {
 
 window.onload=  function(){
 	$.ajax({
-		url: location.href + '/live/data',
+		url: location.href.replace(/\/$/, "") + '/live/data',
 		type: 'GET',
 		dataType: 'JSON',
 		success: function(res) {

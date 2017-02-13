@@ -26,7 +26,7 @@ class Top5visibilityController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function home($requestDate = null) {
-        $requestDate = is_null($requestDate) ? date('Y-m-d') : $requestDate;
+        $requestDate = is_null($requestDate) ? date('Y-m-d') : date('Y-m-d', strtotime($requestDate));
 
         $data = $this->calculateData($requestDate);
 
@@ -42,7 +42,7 @@ class Top5visibilityController extends Controller
      */
     public function getData(Request $request, $date = null) {
 
-        return response()->json($this->calculateData($date !== null ? $date : date('Y-m-d')));
+        return response()->json($this->calculateData($date !== null ? date('Y-m-d', strtotime($date)) : date('Y-m-d')));
     }
 
 
@@ -152,7 +152,7 @@ class Top5visibilityController extends Controller
      */
     public function getTop5($requestDate = null) {
         $dates = DB::table('average_visibility')->select(DB::raw('DISTINCT date'))->get();
-        $data = $this->calculateData($requestDate !== null ? $requestDate : date('Y-m-d'));
+        $data = $this->calculateData($requestDate !== null ? date('Y-m-d', strtotime($requestDate)) : date('Y-m-d'));
         return $data;
     }
 
@@ -163,8 +163,8 @@ class Top5visibilityController extends Controller
     */
     public function downloadData($requestDate){
         //Set headers so it downloads to csv
-        header('Content-Type: text/csv; charset=utf-8');
-        header('Content-Disposition: attachment; filename=unwdmi_data.csv');
+        //header('Content-Type: text/csv; charset=utf-8');
+        //header('Content-Disposition: attachment; filename=unwdmi_data.csv');
 
         //fileopen = output
         $output = fopen('php://output', 'w');
@@ -172,7 +172,7 @@ class Top5visibilityController extends Controller
         //get the data from data() function
         $data = Top5visibilityController::getTop5($requestDate);
 
-
+        dd($data);
         //write header
         fputcsv($output, array('date', 'station', 'avarage'));
         //write data to csv
