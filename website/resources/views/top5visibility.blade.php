@@ -22,16 +22,11 @@
                             @endif
                         @endforeach
                         </select>
-<<<<<<< HEAD
-=======
-
-
                         <a href="" id="downloadCsv" style="margin-top:5px;" class="btn btn-default"><span class="fa fa-download"></span> Download current data to csv</a>
                             <script>
                                 $('#downloadCsv').attr("href", '<?php $_SERVER['HTTP_HOST']; ?>' + '/top5visibility/' + $('#date').val() + '/download');
                             </script>
->>>>>>> 29dae2779a10a087b6bb1a8fd6d545517d1f8c9e
-                    </div>
+                        </div>
                     <script>
                     $('#date').change(function () {
                         location.href = '<?php $_SERVER['HTTP_HOST']; ?>' + '/top5visibility/' + $('#date').val();
