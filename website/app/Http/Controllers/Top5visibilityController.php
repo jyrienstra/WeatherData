@@ -26,8 +26,12 @@ class Top5visibilityController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function home($requestDate = null) {
+        $requestDate = is_null($requestDate) ? date('Y-m-d') : $requestDate;
+
+        $data = $this->calculateData($requestDate);
+
         $dates = DB::table('average_visibility')->select(DB::raw('DISTINCT date'))->get();
-        $data = $this->calculateData($requestDate !== null ? $requestDate : date('Y-m-d'));
+
         return view('top5visibility', compact('data', 'dates', 'requestDate'));
     }
 
@@ -65,6 +69,7 @@ class Top5visibilityController extends Controller
     private function calculateData($date) {
         $performace = microtime();
         $stations = DB::table('balkan_stations')->get()->toArray();
+
 
         if($date == date('Y-m-d')) {
 

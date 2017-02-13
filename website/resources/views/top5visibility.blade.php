@@ -22,8 +22,6 @@
                             @endif
                         @endforeach
                         </select>
-
-                        <a href="#" style="margin-top:5px;" class="btn btn-default"><span class="fa fa-download"></span> Download current data to csv</a>
                     </div>
                     <script>
                     $('#date').change(function () {
@@ -34,7 +32,6 @@
                         <div class="chartAreaWrapper">
                             <div id="myChart" height="500" width="100%"></div>
                         </div>
-                        <canvas id="myChartAxis" height="500" width="0"></canvas>
                     </div>
                 </div>
             </div>
